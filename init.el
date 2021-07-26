@@ -86,6 +86,19 @@
   :hook (prog-mode . rainbow-delimiters-mode))
 
 ;; ************************************************************
+;; Helpful
+;; ************************************************************
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
+
+;; ************************************************************
 ;; General Keybindings
 ;; ************************************************************
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -131,4 +144,4 @@
 ;; ************************************************************
 ;; Custom
 ;; ************************************************************
-(setq custom-file "~/.cache/trash/custom.el")
+(setq custom-file "~/build/homegrown/custom.el")
