@@ -46,8 +46,7 @@
 ;; Ivy
 ;; ************************************************************
 (use-package ivy
-  :bind (("C-s" . swiper)
-         :map ivy-minibuffer-map
+  :bind (:map ivy-minibuffer-map
           ("C-j" . ivy-next-line)
           ("C-k" . ivy-previous-line)
           ("C-r" . counsel-minibuffer-history))
@@ -98,17 +97,51 @@
   ([remap describe-key] . helpful-key))
 
 ;; ************************************************************
-;; General Keybindings
+;; General
 ;; ************************************************************
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-(defun scroll-up-a-line ()
-  (interactive)
-  (scroll-up-command 1))
-(defun scroll-down-a-line ()
-  (interactive)
-  (scroll-down-command 1))
-(global-set-key (kbd "C-j") 'scroll-up-a-line)
-(global-set-key (kbd "C-k") 'scroll-down-a-line)
+(use-package general
+  :config
+  (general-evil-setup t)
+  (general-create-definer rune/leader-keys)
+    ;:keymaps '(normal insert visual emacs)
+    ;:prefix "SPC"
+    ;:global-prefix "C-SPC")
+
+  (rune/leader-keys))
+
+;; ************************************************************
+;; Evil
+;; ************************************************************
+(use-package evil
+:init
+  (setq evil-want-integration t)
+  (setq evil-want-keybinding nil)
+  (setq evil-want-C-u-scroll t)
+  :config
+  (evil-mode 1)
+  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+  (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+  (define-key evil-normal-state-map (kbd "/") 'swiper)
+  (define-key evil-normal-state-map (kbd "C-k") 'evil-scroll-line-up)
+  (define-key evil-normal-state-map (kbd "C-j") 'evil-scroll-line-down)
+
+  ;; Use visual line motions even outside of visual-line-mode buffers
+  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+  (evil-set-initial-state 'messages-buffer-mode 'normal)
+  (evil-set-initial-state 'dashboard-mode 'normal))
+
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init))
+
+;; ************************************************************
+;; Keybindings
+;; ************************************************************
+(general-define-key "<escape>" 'keyboard-escape-quit)
+(general-define-key "C-b" 'counsel-switch-buffer)
 
 ;; ************************************************************
 ;; Faces
@@ -143,4 +176,4 @@
 ;; ************************************************************
 ;; Custom
 ;; ************************************************************
-(setq custom-file "~/build/homegrown/custom.el")
+(setq custom-file "~/build/rune/custom.el")
