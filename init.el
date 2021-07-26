@@ -4,6 +4,7 @@
 (column-number-mode)
 (global-display-line-numbers-mode t)
 (setq use-dialog-box nil)
+(add-hook 'prog-mode-hook (show-paren-mode))
 
 ;; *************************************************************
 ;; Initialize package sources
@@ -102,12 +103,14 @@
 (use-package general
   :config
   (general-evil-setup t)
-  (general-create-definer rune/leader-keys)
-    ;:keymaps '(normal insert visual emacs)
-    ;:prefix "SPC"
-    ;:global-prefix "C-SPC")
+  (general-create-definer rune/leader-keys
+    :keymaps '(normal insert visual emacs)
+    :prefix "SPC"
+    :global-prefix "C-SPC")
 
-  (rune/leader-keys))
+  (rune/leader-keys
+   "t" '(:ignore t :which-key "toggles")
+   "tt" '(counsel-load-theme :which-key "choose-theme")))
 
 ;; ************************************************************
 ;; Evil
@@ -116,9 +119,13 @@
 :init
   (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
+  (setq evil-want-Y-yank-to-eol t)
+  (setq evil-want-fine-undo t)
   (setq evil-want-C-u-scroll t)
+  (setq evil-move-beyond-eol t)
   :config
   (evil-mode 1)
+  (setq evil-shift-width 2)
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
   (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
   (define-key evil-normal-state-map (kbd "/") 'swiper)
@@ -138,10 +145,19 @@
   (evil-collection-init))
 
 ;; ************************************************************
+;; Miscellaneous Functions
+;; ************************************************************
+(defun rune/edit-init ()
+  "Edit the init.el file."
+  (interactive)
+  (find-file "~/build/rune/init.el"))
+
+;; ************************************************************
 ;; Keybindings
 ;; ************************************************************
 (general-define-key "<escape>" 'keyboard-escape-quit)
 (general-define-key "C-b" 'counsel-switch-buffer)
+(general-define-key "C-M-i" 'rune/edit-init)
 
 ;; ************************************************************
 ;; Faces
@@ -150,6 +166,14 @@
                     :foreground "#c5d4dd"
                     :background nil
                     :box t                                    )
+(set-face-attribute 'doom-modeline-evil-normal-state nil
+                    :weight 'normal                           )
+(set-face-attribute 'doom-modeline-evil-insert-state nil
+                    :weight 'normal                           )
+(set-face-attribute 'doom-modeline-evil-visual-state nil
+                    :weight 'normal                           )
+(set-face-attribute 'doom-modeline-evil-emacs-state nil
+                    :weight 'normal                           )
 
 ;; ************************************************************
 ;; Garbage collection
