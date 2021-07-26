@@ -16,11 +16,24 @@
 
 (setq fast-but-imprecise-scrolling t)
 
+(setq idle-update-delay 1.0)
+
+(setq redisplay-skip-fontification-on-input t)
+
 (setq frame-inhibit-implied-resize t)
 (setq initial-major-mode
       'fundamental-mode)
 
+;; ************************************************************
+;; UI Setup
+;; ************************************************************
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (setq inhibit-startup-message t)
+
+(setq default-frame-alist            ; font config
+      (append (list
+               '(font . "Hack:style=Regular:size=16")
+               '(height . 50)
+               '(width . 81))))
