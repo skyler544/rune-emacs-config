@@ -3,6 +3,7 @@
 ;; *************************************************************
 (column-number-mode)
 (global-display-line-numbers-mode t)
+(setq use-dialog-box nil)
 
 ;; *************************************************************
 ;; Initialize package sources
@@ -31,14 +32,12 @@
 ;; Doom modeline
 ;; ************************************************************
 (use-package doom-modeline
-  :ensure t
   :init (doom-modeline-mode 1))
 
 ;; ************************************************************
 ;; Doom themes
 ;; ************************************************************
 (use-package doom-themes
-  :ensure t
   :config
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t)
@@ -48,33 +47,46 @@
 ;; Ivy
 ;; ************************************************************
 (use-package ivy
-  :ensure t
-  :bind (:map ivy-minibuffer-map
-        ("C-j" . ivy-next-line)
-        ("C-k" . ivy-previous-line))
-  :init (ivy-mode 1))
+  :bind (("C-s" . swiper)
+         :map ivy-minibuffer-map
+          ("C-j" . ivy-next-line)
+          ("C-k" . ivy-previous-line)
+          ("C-r" . counsel-minibuffer-history))
+  :init (ivy-mode 1)
+  :config
+  (setq ivy-initial-inputs-alist nil))
+
+;; ************************************************************
+;; Ivy Rich
+;; ************************************************************
+(use-package ivy-rich
+  :init (ivy-rich-mode))
 
 ;; ************************************************************
 ;; Counsel
 ;; ************************************************************
 (use-package counsel
-  :ensure t)
+  :bind ("M-x" . counsel-M-x))
 
 ;; ************************************************************
 ;; Swiper
 ;; ************************************************************
-(use-package swiper
-  :ensure t)
+(use-package swiper)
 
 ;; ************************************************************
 ;; Which key
 ;; ************************************************************
 (use-package which-key
-  :ensure t
   :init (which-key-mode))
 
 ;; ************************************************************
-;; Keybindings
+;; Rainbow Delimiters
+;; ************************************************************
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+;; ************************************************************
+;; General Keybindings
 ;; ************************************************************
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (defun scroll-up-a-line ()
@@ -112,6 +124,11 @@
 (add-hook 'minibuffer-exit-hook #'doom-restore-garbage-collection-h)
 
 ;; ************************************************************
+;; Miscellaneous
+;; ************************************************************
+(setq make-backup-files nil) ; this stops the annoying ~ files
+
+;; ************************************************************
 ;; Custom
 ;; ************************************************************
-(setq custom-file "~/build/homegrown/custom.el")
+(setq custom-file "~/.cache/trash/custom.el")
