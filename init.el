@@ -3,8 +3,10 @@
 ;; *************************************************************
 (column-number-mode)
 (global-display-line-numbers-mode t)
+(setq display-line-numbers-width-start t)
 (setq use-dialog-box nil)
 (add-hook 'prog-mode-hook (show-paren-mode))
+(setq frame-resize-pixelwise t)
 
 ;; *************************************************************
 ;; Initialize package sources
@@ -55,21 +57,16 @@
   :config
   (setq ivy-initial-inputs-alist nil))
 
-;; ************************************************************
-;; Ivy Rich
-;; ************************************************************
 (use-package ivy-rich
   :init (ivy-rich-mode))
 
-;; ************************************************************
-;; Counsel
-;; ************************************************************
 (use-package counsel
-  :bind ("M-x" . counsel-M-x))
+  :bind ("M-x" . counsel-M-x)
+  :config
+  (setq counsel-fzf-cmd "fd . '/home/clock/.config/' '/home/clock/'\
+                            '/home/clock/.local/bin'\
+                            | fzf -f \"%s\""))
 
-;; ************************************************************
-;; Swiper
-;; ************************************************************
 (use-package swiper)
 
 ;; ************************************************************
@@ -109,8 +106,35 @@
     :global-prefix "C-SPC")
 
   (rune/leader-keys
-   "t" '(:ignore t :which-key "toggles")
-   "tt" '(counsel-load-theme :which-key "choose-theme")))
+   "SPC" '(counsel-M-x :which-key "M-x")
+   "."   '(counsel-find-file :which-key "find files in current dir")
+   "f"   '(:ignore t :which-key "files")
+   "ff"  '(counsel-fzf :which-key "fzf")
+   "fp"  '(projectile-find-file :which-key "find file in project")
+   "fi"  '(rune/edit-init :which-key "edit init file")
+   "fI"  '(rune/browse-init :which-key "browse init dir")
+   "fw"  '(rune/browse-work :which-key "browse work dir")
+   "fs"  '(save-buffer :which-key "save-buffer")
+   "fS"  '(write-file :which-key "write-file")
+   "q"   '(:ignore t :which-key "quit")
+   "qK"  '(save-buffers-kill-emacs :which-key "save and quit")
+   "b"   '(:ignore t :which-key "buffer")
+   "bb"  '(counsel-switch-buffer :which-key "switch buffer")
+   "bi"  '(projectile-ibuffer :which-key "ibuffer")
+   "bk"  '(kill-current-buffer :which-key "kill current buffer")
+   "bs"  '(save-buffer :which-key "save-buffer")
+   "bS"  '(write-file :which-key "write-file")
+   "h"   '(:ignore t :which-key "help")
+   "hf"  '(counsel-describe-function :which-key "describe function")
+   "hv"  '(counsel-describe-variable :which-key "describe variable")
+   "hk"  '(helpful-key :which-key "describe key")
+   "hF"  '(counsel-faces :which-key "describe face")
+   "w"   '(:package evil
+	   :keymap evil-window-map
+	   :which-key "window")
+   "p"   '(:package projectile
+           :keymap projectile-command-map
+           :which-key "project")))
 
 ;; ************************************************************
 ;; Evil
@@ -121,6 +145,7 @@
   (setq evil-want-keybinding nil)
   (setq evil-want-Y-yank-to-eol t)
   (setq evil-want-fine-undo t)
+  (setq evil-kill-on-visual-paste nil)
   (setq evil-want-C-u-scroll t)
   (setq evil-move-beyond-eol t)
   :config
@@ -131,6 +156,7 @@
   (define-key evil-normal-state-map (kbd "/") 'swiper)
   (define-key evil-normal-state-map (kbd "C-k") 'evil-scroll-line-up)
   (define-key evil-normal-state-map (kbd "C-j") 'evil-scroll-line-down)
+  (define-key evil-normal-state-map (kbd "C-w") 'evil-scroll-line-up)
 
   ;; Use visual line motions even outside of visual-line-mode buffers
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
@@ -145,6 +171,24 @@
   (evil-collection-init))
 
 ;; ************************************************************
+;; Projectile
+;; ************************************************************
+(use-package projectile
+  :config (projectile-mode))
+(use-package counsel-projectile
+ :after projectile
+ :config
+ (counsel-projectile-mode 1))
+
+;; ************************************************************
+;; Magit
+;; ************************************************************
+(use-package magit
+  :commands (magit-status magit-get-current-branch)
+  :custom
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+;; ************************************************************
 ;; Miscellaneous Functions
 ;; ************************************************************
 (defun rune/edit-init ()
@@ -152,12 +196,26 @@
   (interactive)
   (find-file "~/build/rune/init.el"))
 
+(defun rune/browse-init ()
+  "Browse the init folder."
+  (interactive)
+  (counsel-find-file "~/build/rune/"))
+
+(defun rune/browse-mega ()
+  "Edit the init.el file."
+  (interactive)
+  (counsel-find-file "~/mega/"))
+
+(defun rune/browse-work ()
+  "Edit the init.el file."
+  (interactive)
+  (counsel-find-file "~/mega/work/"))
+
 ;; ************************************************************
 ;; Keybindings
 ;; ************************************************************
 (general-define-key "<escape>" 'keyboard-escape-quit)
 (general-define-key "C-b" 'counsel-switch-buffer)
-(general-define-key "C-M-i" 'rune/edit-init)
 
 ;; ************************************************************
 ;; Faces
