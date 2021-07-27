@@ -40,10 +40,13 @@
 ;; Doom themes
 ;; ************************************************************
 (use-package doom-themes
+  :after doom-modeline
   :config
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t)
-  (load-theme 'doom-nova t))
+  (setq custom-theme-directory "~/build/rune/themes/")
+  (load-theme 'doom-sourcerer-alt t))
+
 
 ;; ************************************************************
 ;; Ivy
@@ -112,8 +115,6 @@
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
   (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
   (define-key evil-normal-state-map (kbd "/") 'swiper)
-  (define-key evil-normal-state-map (kbd "C-k") 'evil-scroll-line-up)
-  (define-key evil-normal-state-map (kbd "C-j") 'evil-scroll-line-down)
   (define-key evil-normal-state-map (kbd "C-w") 'evil-scroll-line-up)
 
   ;; Use visual line motions even outside of visual-line-mode buffers
@@ -127,6 +128,14 @@
   :after evil
   :config
   (evil-collection-init))
+
+(use-package evil-mc
+  :after (evil general)
+  :config
+  (global-evil-mc-mode 1)
+  (setq evil-mc-undo-cursors-on-keyboard-quit t)
+  :bind (("C-j" . evil-mc-make-cursor-move-next-line)
+         ("C-k" . evil-mc-make-cursor-move-prev-line)))
 
 ;; ************************************************************
 ;; Org
@@ -187,6 +196,7 @@
    "bS"  '(write-file :which-key "write-file")
    "h"   '(:ignore t :which-key "help")
    "ha"  '(apropos :which-key "apropos")
+   "ht"  '(counsel-load-theme :which-key "load theme")
    "hf"  '(counsel-describe-function :which-key "describe function")
    "hv"  '(counsel-describe-variable :which-key "describe variable")
    "hk"  '(helpful-key :which-key "describe key")
@@ -256,26 +266,8 @@
 ;; ************************************************************
 ;; Faces
 ;; ************************************************************
-(set-face-attribute 'help-key-binding nil
-                    :foreground "#c5d4dd"
-                    :background nil
-                    :box t                                    )
-(set-face-attribute 'org-level-1 nil
-		    :foreground "#c5d4dd"                     )
-(set-face-attribute 'org-level-2 nil
-		    :foreground "#c5d4dd"                     )
-(set-face-attribute 'org-level-3 nil
-		    :foreground "#c5d4dd"                     )
-(set-face-attribute 'org-level-4 nil
-		    :foreground "#c5d4dd"                     )
-(set-face-attribute 'org-level-5 nil
-		    :foreground "#c5d4dd"                     )
-(set-face-attribute 'org-level-6 nil
-		    :foreground "#c5d4dd"                     )
-(set-face-attribute 'org-level-7 nil
-		    :foreground "#c5d4dd"                     )
-(set-face-attribute 'org-level-8 nil
-		    :foreground "#c5d4dd"                     )
+(set-face-attribute 'doom-modeline-buffer-path nil
+                    :foreground "#87875f"                     )
 (set-face-attribute 'ivy-cursor nil
 		    :foreground "#c5d4dd"
                     :background "#3e545c"                     )
