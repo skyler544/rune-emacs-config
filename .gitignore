@@ -7,3 +7,5 @@ elpa/
 emacs-beginners.org
 tutorial/
 custom.el
+transient/
+projectile-bookmarks.eld
