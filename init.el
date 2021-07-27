@@ -95,48 +95,6 @@
   ([remap describe-key] . helpful-key))
 
 ;; ************************************************************
-;; General
-;; ************************************************************
-(use-package general
-  :config
-  (general-evil-setup t)
-  (general-create-definer rune/leader-keys
-    :keymaps '(normal insert visual emacs)
-    :prefix "SPC"
-    :global-prefix "C-SPC")
-
-  (rune/leader-keys
-   "SPC" '(counsel-M-x :which-key "M-x")
-   "."   '(counsel-find-file :which-key "find files in current dir")
-   "f"   '(:ignore t :which-key "files")
-   "ff"  '(counsel-fzf :which-key "fzf")
-   "fp"  '(projectile-find-file :which-key "find file in project")
-   "fi"  '(rune/edit-init :which-key "edit init file")
-   "fI"  '(rune/browse-init :which-key "browse init dir")
-   "fw"  '(rune/browse-work :which-key "browse work dir")
-   "fs"  '(save-buffer :which-key "save-buffer")
-   "fS"  '(write-file :which-key "write-file")
-   "q"   '(:ignore t :which-key "quit")
-   "qK"  '(save-buffers-kill-emacs :which-key "save and quit")
-   "b"   '(:ignore t :which-key "buffer")
-   "bb"  '(counsel-switch-buffer :which-key "switch buffer")
-   "bi"  '(projectile-ibuffer :which-key "ibuffer")
-   "bk"  '(kill-current-buffer :which-key "kill current buffer")
-   "bs"  '(save-buffer :which-key "save-buffer")
-   "bS"  '(write-file :which-key "write-file")
-   "h"   '(:ignore t :which-key "help")
-   "hf"  '(counsel-describe-function :which-key "describe function")
-   "hv"  '(counsel-describe-variable :which-key "describe variable")
-   "hk"  '(helpful-key :which-key "describe key")
-   "hF"  '(counsel-faces :which-key "describe face")
-   "w"   '(:package evil
-	   :keymap evil-window-map
-	   :which-key "window")
-   "p"   '(:package projectile
-           :keymap projectile-command-map
-           :which-key "project")))
-
-;; ************************************************************
 ;; Evil
 ;; ************************************************************
 (use-package evil
@@ -171,6 +129,50 @@
   (evil-collection-init))
 
 ;; ************************************************************
+;; General
+;; ************************************************************
+(use-package general
+  :config
+  (general-evil-setup t)
+  (general-create-definer rune/leader-keys
+    :keymaps '(normal insert visual emacs)
+    :prefix "SPC"
+    :global-prefix "C-SPC")
+
+  (rune/leader-keys
+   "SPC" '(counsel-M-x :which-key "M-x")
+   "."   '(counsel-find-file :which-key "find files in current dir")
+   "f"   '(:ignore t :which-key "files")
+   "ff"  '(counsel-fzf :which-key "fzf")
+   "fp"  '(projectile-find-file :which-key "find file in project")
+   "fi"  '(rune/edit-init :which-key "edit init file")
+   "fI"  '(rune/browse-init :which-key "browse init dir")
+   "fw"  '(rune/browse-work :which-key "browse work dir")
+   "fm"  '(rune/browse-mega :which-key "browse mega")
+   "fs"  '(save-buffer :which-key "save-buffer")
+   "fS"  '(write-file :which-key "write-file")
+   "g"   '(magit :which-key "git")
+   "q"   '(:ignore t :which-key "quit")
+   "qK"  '(save-buffers-kill-emacs :which-key "save and quit")
+   "b"   '(:ignore t :which-key "buffer")
+   "bb"  '(counsel-switch-buffer :which-key "switch buffer")
+   "bi"  '(ibuffer :which-key "ibuffer")
+   "bk"  '(kill-current-buffer :which-key "kill current buffer")
+   "bs"  '(save-buffer :which-key "save-buffer")
+   "bS"  '(write-file :which-key "write-file")
+   "h"   '(:ignore t :which-key "help")
+   "hf"  '(counsel-describe-function :which-key "describe function")
+   "hv"  '(counsel-describe-variable :which-key "describe variable")
+   "hk"  '(helpful-key :which-key "describe key")
+   "hF"  '(counsel-faces :which-key "describe face")
+   "w"   '(:package evil
+	   :keymap evil-window-map
+	   :which-key "window")
+   "p"   '(:package projectile
+           :keymap projectile-command-map
+           :which-key "project")))
+
+;; ************************************************************
 ;; Projectile
 ;; ************************************************************
 (use-package projectile
@@ -202,12 +204,12 @@
   (counsel-find-file "~/build/rune/"))
 
 (defun rune/browse-mega ()
-  "Edit the init.el file."
+  "Browse Mega."
   (interactive)
   (counsel-find-file "~/mega/"))
 
 (defun rune/browse-work ()
-  "Edit the init.el file."
+  "Browse the work folder."
   (interactive)
   (counsel-find-file "~/mega/work/"))
 
