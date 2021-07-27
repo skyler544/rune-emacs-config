@@ -129,6 +129,30 @@
   (evil-collection-init))
 
 ;; ************************************************************
+;; Org
+;; ************************************************************
+(defun rune/org-mode-setup ()
+  (org-indent-mode)
+  (variable-pitch-mode 0)
+  (auto-fill-mode 0)
+  (visual-line-mode 1)
+  (setq evil-auto-indent nil))
+
+(use-package org
+  :hook (org-mode . rune/org-mode-setup)
+  :config
+  (setq org-ellipsis " ▾"
+        org-hide-emphasis-markers t))
+
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+(require 'org-indent)
+
+;; ************************************************************
 ;; General
 ;; ************************************************************
 (use-package general
@@ -145,6 +169,7 @@
    "f"   '(:ignore t :which-key "files")
    "ff"  '(counsel-fzf :which-key "fzf")
    "fp"  '(projectile-find-file :which-key "find file in project")
+   "fo"  '(rune/browse-org :which-key "browse org folder")
    "fi"  '(rune/edit-init :which-key "edit init file")
    "fI"  '(rune/browse-init :which-key "browse init dir")
    "fw"  '(rune/browse-work :which-key "browse work dir")
@@ -161,10 +186,14 @@
    "bs"  '(save-buffer :which-key "save-buffer")
    "bS"  '(write-file :which-key "write-file")
    "h"   '(:ignore t :which-key "help")
+   "ha"  '(apropos :which-key "apropos")
    "hf"  '(counsel-describe-function :which-key "describe function")
    "hv"  '(counsel-describe-variable :which-key "describe variable")
    "hk"  '(helpful-key :which-key "describe key")
    "hF"  '(counsel-faces :which-key "describe face")
+   "o"   '(:package org
+	   :keymap org-mode-map
+	   :which-key "org")
    "w"   '(:package evil
 	   :keymap evil-window-map
 	   :which-key "window")
@@ -213,6 +242,11 @@
   (interactive)
   (counsel-find-file "~/mega/work/"))
 
+(defun rune/browse-org ()
+  "Browse the org folder."
+  (interactive)
+  (counsel-find-file "~/mega/org/"))
+
 ;; ************************************************************
 ;; Keybindings
 ;; ************************************************************
@@ -226,6 +260,67 @@
                     :foreground "#c5d4dd"
                     :background nil
                     :box t                                    )
+(set-face-attribute 'org-level-1 nil
+		    :foreground "#c5d4dd"                     )
+(set-face-attribute 'org-level-2 nil
+		    :foreground "#c5d4dd"                     )
+(set-face-attribute 'org-level-3 nil
+		    :foreground "#c5d4dd"                     )
+(set-face-attribute 'org-level-4 nil
+		    :foreground "#c5d4dd"                     )
+(set-face-attribute 'org-level-5 nil
+		    :foreground "#c5d4dd"                     )
+(set-face-attribute 'org-level-6 nil
+		    :foreground "#c5d4dd"                     )
+(set-face-attribute 'org-level-7 nil
+		    :foreground "#c5d4dd"                     )
+(set-face-attribute 'org-level-8 nil
+		    :foreground "#c5d4dd"                     )
+(set-face-attribute 'ivy-cursor nil
+		    :foreground "#c5d4dd"
+                    :background "#3e545c"                     )
+(set-face-attribute 'xref-match nil
+		    :foreground "#c5d4dd"
+                    :background "#3e545c"                     )
+(set-face-attribute 'match nil
+		    :foreground "#c5d4dd"
+                    :background "#3e545c"                     )
+(set-face-attribute 'swiper-line-face nil
+		    :foreground "#c5d4dd"
+                    :background "#708591"                     )
+(set-face-attribute 'swiper-match-face-4 nil
+		    :foreground "#c5d4dd"
+                    :background "#3e545c"                     )
+(set-face-attribute 'swiper-match-face-3 nil
+		    :foreground "#c5d4dd"
+                    :background "#3e545c"                     )
+(set-face-attribute 'swiper-match-face-2 nil
+		    :foreground "#c5d4dd"
+                    :background "#3e545c"                     )
+(set-face-attribute 'swiper-match-face-1 nil
+		    :foreground "#c5d4dd"
+                    :background "#3e545c"                     )
+(set-face-attribute 'swiper-background-match-face-4 nil
+		    :foreground "#c5d4dd"
+                    :background "#3e545c"                     )
+(set-face-attribute 'swiper-background-match-face-3 nil
+		    :foreground "#c5d4dd"
+                    :background "#3e545c"                     )
+(set-face-attribute 'swiper-background-match-face-2 nil
+		    :foreground "#c5d4dd"
+                    :background "#3e545c"                     )
+(set-face-attribute 'swiper-background-match-face-1 nil
+		    :foreground "#c5d4dd"
+                    :background "#3e545c"                     )
+(set-face-attribute 'evil-ex-lazy-highlight nil
+		    :foreground "#c5d4dd"
+                    :background "#3e545c"                     )
+(set-face-attribute 'ivy-minibuffer-match-face-2 nil
+		    :foreground "#74969F"
+                    :background nil                           )
+(set-face-attribute 'ivy-minibuffer-match-face-3 nil
+		    :foreground "#D39735"
+                    :background nil                           )
 (set-face-attribute 'doom-modeline-evil-normal-state nil
                     :weight 'normal                           )
 (set-face-attribute 'doom-modeline-evil-insert-state nil
