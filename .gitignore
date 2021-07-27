@@ -6,3 +6,4 @@ tmp/
 elpa/
 emacs-beginners.org
 tutorial/
+custom.el
