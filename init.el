@@ -45,7 +45,7 @@
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t)
   (setq custom-theme-directory "~/build/rune/themes/")
-  (load-theme 'doom-sourcerer-alt t))
+  (load-theme 'doom-sandstorm t))
 
 
 ;; ************************************************************
@@ -266,8 +266,26 @@
 ;; ************************************************************
 ;; Faces
 ;; ************************************************************
-(set-face-attribute 'doom-modeline-buffer-path nil
-                    :foreground "#87875f"                     )
+(set-face-attribute 'help-key-binding nil
+                    :foreground "#c5d4dd"
+                    :background nil
+                    :box t                                    )
+(set-face-attribute 'org-level-1 nil
+		    :foreground "#c5d4dd"                     )
+(set-face-attribute 'org-level-2 nil
+		    :foreground "#c5d4dd"                     )
+(set-face-attribute 'org-level-3 nil
+		    :foreground "#c5d4dd"                     )
+(set-face-attribute 'org-level-4 nil
+		    :foreground "#c5d4dd"                     )
+(set-face-attribute 'org-level-5 nil
+		    :foreground "#c5d4dd"                     )
+(set-face-attribute 'org-level-6 nil
+		    :foreground "#c5d4dd"                     )
+(set-face-attribute 'org-level-7 nil
+		    :foreground "#c5d4dd"                     )
+(set-face-attribute 'org-level-8 nil
+		    :foreground "#c5d4dd"                     )
 (set-face-attribute 'ivy-cursor nil
 		    :foreground "#c5d4dd"
                     :background "#3e545c"                     )
