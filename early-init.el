@@ -21,8 +21,7 @@
 (setq redisplay-skip-fontification-on-input t)
 
 (setq frame-inhibit-implied-resize t)
-(setq initial-major-mode
-      'fundamental-mode)
+(setq initial-major-mode 'fundamental-mode)
 
 ;; ************************************************************
 ;; UI Setup

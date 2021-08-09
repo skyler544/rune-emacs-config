@@ -60,15 +60,16 @@
   :config
   (setq ivy-initial-inputs-alist nil))
 
-(use-package ivy-rich
-  :init (ivy-rich-mode))
-
 (use-package counsel
   :bind ("M-x" . counsel-M-x)
   :config
   (setq counsel-fzf-cmd "fd . '/home/clock/.config/' '/home/clock/'\
                             '/home/clock/.local/bin'\
                             | fzf -f \"%s\""))
+
+(use-package ivy-rich
+  :after counsel
+  :init (ivy-rich-mode))
 
 (use-package swiper)
 
@@ -160,6 +161,17 @@
   (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
 (require 'org-indent)
+
+(use-package org-roam
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory "~/mega/roam")
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert))
+  :config
+  (org-roam-setup))
 
 ;; ************************************************************
 ;; General
