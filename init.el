@@ -242,6 +242,25 @@
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
 ;; ************************************************************
+;; Dired
+;; ************************************************************
+(use-package dired
+  :ensure nil
+  :commands (dired dired-jump)
+  :bind (("C-x C-j" . dired-jump))
+  :init
+  (add-hook 'dired-mode-hook #'dired-hide-details-mode)
+  :config
+   (evil-collection-define-key 'normal 'dired-mode-map
+    "h" 'dired-single-up-directory
+    "l" 'dired-single-buffer))
+
+(use-package dired-single)
+
+(use-package all-the-icons-dired
+  :hook (dired-mode . all-the-icons-dired-mode))
+
+;; ************************************************************
 ;; Miscellaneous Functions
 ;; ************************************************************
 (defun rune/edit-init ()
