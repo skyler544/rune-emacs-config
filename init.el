@@ -214,11 +214,11 @@
    "hk"  '(helpful-key :which-key "describe key")
    "hF"  '(counsel-faces :which-key "describe face")
    "o"   '(:package org
-	   :keymap org-mode-map
-	   :which-key "org")
+           :keymap org-mode-map
+           :which-key "org")
    "w"   '(:package evil
-	   :keymap evil-window-map
-	   :which-key "window")
+           :keymap evil-window-map
+           :which-key "window")
    "p"   '(:package projectile
            :keymap projectile-command-map
            :which-key "project")))

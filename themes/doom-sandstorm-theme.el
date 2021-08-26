@@ -135,7 +135,7 @@
    (ivy-minibuffer-match-face-2       :background nil        :foreground dark-blue           )
    (ivy-minibuffer-match-face-3       :background nil        :foreground magenta             )
    (ivy-cursor                        :background fg                                         )
-
+   (variable-pitch                    :background nil        :foreground fg :height 120                  )
    (doom-modeline-info                :bold nil                                              )
    (doom-modeline-warning             :bold nil                                              )
    (doom-modeline-debug               :bold nil                                              )
