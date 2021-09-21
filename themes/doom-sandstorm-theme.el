@@ -37,6 +37,7 @@
    (yellow     '("#cc8800" "#CBC03F" "yellow"       ))
    (yellow-2   '("#CBC03F" "#CBC03F" "yellow"       ))
    (light-grey '("#D1D1BE" "#A0A3A8" "white"        ))
+   (dark-grey  '("#212A2E" "#212A2E" "brightblack"  ))
    (dark-blue  '("#6688aa" "#5C748E" "blue"         ))
    (blue       '("#6783A0" "#6783A0" "blue"         ))
    (magenta    '("#8787AF" "#7979B4" "magenta"      ))
@@ -46,7 +47,7 @@
 
    ;; face categories -- required for all themes
    (highlight                 light-grey            )
-   (vertical-bar              (doom-darken base1 0.2))
+   (vertical-bar              dark-grey             )
    (selection                 base3                 )
    (builtin                   teal                  )
    (comments                  base7                 )
@@ -135,7 +136,7 @@
    (ivy-minibuffer-match-face-2       :background nil        :foreground dark-blue           )
    (ivy-minibuffer-match-face-3       :background nil        :foreground magenta             )
    (ivy-cursor                        :background fg                                         )
-   (variable-pitch                    :background nil        :foreground fg :height 120                  )
+   (variable-pitch                    :background nil        :foreground fg :height 120      )
    (doom-modeline-info                :bold nil                                              )
    (doom-modeline-warning             :bold nil                                              )
    (doom-modeline-debug               :bold nil                                              )
