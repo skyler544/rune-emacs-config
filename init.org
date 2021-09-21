@@ -1,0 +1,4 @@
+#+title: init
+#+PROPERTY: header-args:emacs-lisp :tangle ./init-alt.el :mkdirp yes
+
+src
