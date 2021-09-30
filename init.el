@@ -7,6 +7,8 @@
 (setq use-dialog-box nil)
 (add-hook 'prog-mode-hook (show-paren-mode))
 (setq frame-resize-pixelwise t)
+(add-to-list 'load-path "~/build/emacs-splash")
+(require 'splash-screen)
 
 ;; *************************************************************
 ;; Initialize package sources
@@ -49,29 +51,8 @@
 
 
 ;; ************************************************************
-;; Ivy
+;; Vertico
 ;; ************************************************************
-(use-package ivy
-  :bind (:map ivy-minibuffer-map
-          ("C-j" . ivy-next-line)
-          ("C-k" . ivy-previous-line)
-          ("C-r" . counsel-minibuffer-history))
-  :init (ivy-mode 1)
-  :config
-  (setq ivy-initial-inputs-alist nil))
-
-(use-package counsel
-  :bind ("M-x" . counsel-M-x)
-  :config
-  (setq counsel-fzf-cmd "fd . '/home/clock/.config/' '/home/clock/'\
-                            '/home/clock/.local/bin'\
-                            | fzf -f \"%s\""))
-
-(use-package ivy-rich
-  :after counsel
-  :init (ivy-rich-mode))
-
-(use-package swiper)
 
 ;; ************************************************************
 ;; Which key
@@ -185,10 +166,10 @@
     :global-prefix "C-SPC")
 
   (rune/leader-keys
-   "SPC" '(counsel-M-x :which-key "M-x")
-   "."   '(counsel-find-file :which-key "find files in current dir")
+;  "SPC" '(counsel-M-x :which-key "M-x")
+;  "."   '(counsel-find-file :which-key "find files in current dir")
    "f"   '(:ignore t :which-key "files")
-   "ff"  '(counsel-fzf :which-key "fzf")
+;  "ff"  '(counsel-fzf :which-key "fzf")
    "fp"  '(projectile-find-file :which-key "find file in project")
    "fo"  '(rune/browse-org :which-key "browse org folder")
    "fi"  '(rune/edit-init :which-key "edit init file")
@@ -201,18 +182,18 @@
    "q"   '(:ignore t :which-key "quit")
    "qK"  '(save-buffers-kill-emacs :which-key "save and quit")
    "b"   '(:ignore t :which-key "buffer")
-   "bb"  '(counsel-switch-buffer :which-key "switch buffer")
+;  "bb"  '(counsel-switch-buffer :which-key "switch buffer")
    "bi"  '(ibuffer :which-key "ibuffer")
    "bk"  '(kill-current-buffer :which-key "kill current buffer")
    "bs"  '(save-buffer :which-key "save-buffer")
    "bS"  '(write-file :which-key "write-file")
    "h"   '(:ignore t :which-key "help")
    "ha"  '(apropos :which-key "apropos")
-   "ht"  '(counsel-load-theme :which-key "load theme")
-   "hf"  '(counsel-describe-function :which-key "describe function")
-   "hv"  '(counsel-describe-variable :which-key "describe variable")
+;  "ht"  '(counsel-load-theme :which-key "load theme")
+;  "hf"  '(counsel-describe-function :which-key "describe function")
+;  "hv"  '(counsel-describe-variable :which-key "describe variable")
    "hk"  '(helpful-key :which-key "describe key")
-   "hF"  '(counsel-faces :which-key "describe face")
+;  "hF"  '(counsel-faces :which-key "describe face")
    "o"   '(:package org
            :keymap org-mode-map
            :which-key "org")
