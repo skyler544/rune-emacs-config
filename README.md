@@ -1,0 +1,1 @@
+This config is inspired by the Emacs from Scratch YouTube series and Doom Emacs. It's disorganized and all the file paths for things like convenience functions for finding files from specific directories use absolute paths and are therefore useless to anyone but me. Feel free to give me tips on how to make such settings more portable by using relative paths.
