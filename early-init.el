@@ -29,10 +29,16 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
-(setq inhibit-startup-message t)
 
 (setq default-frame-alist            ; font config
       (append (list
                '(font . "Hack:style=Regular:size=16")
                '(height . 50)
                '(width . 81))))
+
+(column-number-mode)
+(global-display-line-numbers-mode t)
+(setq display-line-numbers-width-start t)
+(setq use-dialog-box nil)
+(add-hook 'prog-mode-hook (show-paren-mode))
+(setq frame-resize-pixelwise t)
