@@ -1,15 +1,4 @@
-;; *************************************************************
-;; UI Configuration
-;; *************************************************************
-(column-number-mode)
-(global-display-line-numbers-mode t)
-(setq display-line-numbers-width-start t)
-(setq use-dialog-box nil)
-(add-hook 'prog-mode-hook (show-paren-mode))
-(setq frame-resize-pixelwise t)
-(add-to-list 'load-path "~/build/emacs-splash")
-(require 'splash-screen)
-
+;; -*- lexical-binding: t -*-
 ;; *************************************************************
 ;; Initialize package sources
 ;; *************************************************************
@@ -33,32 +22,133 @@
 (setq use-package-always-ensure t)
 
 ;; ************************************************************
-;; Doom modeline
+;; wgrep
 ;; ************************************************************
-(use-package doom-modeline
-  :init (doom-modeline-mode 1))
-
-;; ************************************************************
-;; Doom themes
-;; ************************************************************
-(use-package doom-themes
-  :after doom-modeline
+(use-package wgrep
   :config
-  (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t)
-  (setq custom-theme-directory "~/build/rune/themes/")
-  (load-theme 'doom-sandstorm t))
-
+  (setq wgrep-auto-save-buffer t))
 
 ;; ************************************************************
 ;; Vertico
 ;; ************************************************************
+(use-package vertico
+  :custom
+  (vertico-cycle t)
+  :config
+  (setq file-name-shadow-properties '(invisible t intangible t))
+  (file-name-shadow-mode +1)
+  :init
+  (vertico-mode))
+
+;; ************************************************************
+;; Orderless
+;; ************************************************************
+(use-package orderless
+  :custom
+  (completion-styles '(orderless)))
+
+;; ************************************************************
+;; Marginalia
+;; ************************************************************
+(use-package marginalia
+  :init
+  (marginalia-mode))
+
+;; ************************************************************
+;; Corfu
+;; ************************************************************
+(use-package corfu
+  :custom
+  (corfu-cycle t)
+  (corfu-auto t)
+  (corfu-quit-at-boundary t)
+; (corfu-quit-no-match t)
+
+  :bind (:map corfu-map
+         ("TAB" . corfu-next)
+         ([tab] . corfu-next)
+         ("S-TAB" . corfu-previous)
+         ([backtab] . corfu-previous))
+
+  :config
+  (setq corfu-auto-delay 0.3)
+  :init
+  (setq tab-always-indent 'complete)
+  (corfu-global-mode))
+
+;; ************************************************************
+;; Consult
+;; ************************************************************
+(use-package consult
+  :config
+  (advice-add #'completing-read-multiple
+              :override #'consult-completing-read-multiple)
+  (setq completion-in-region-function
+      (lambda (&rest args)
+        (apply (if vertico-mode
+                   #'consult-completion-in-region
+                 #'completion--in-region)
+               args))))
+
+(defun rune-consult-line-evil-history (&rest _)
+  "Add latest `consult-line' search pattern to the evil search history ring.
+This only works with orderless and for the first component of the search."
+  (when (and (bound-and-true-p evil-mode)
+             (eq evil-search-module 'evil-search))
+    (let ((pattern (car (orderless-pattern-compiler (car consult--line-history)))))
+      (add-to-history 'evil-ex-search-history pattern)
+      (setq evil-ex-search-pattern (list pattern t t))
+      (setq evil-ex-search-direction 'forward)
+      (when evil-ex-search-persistent-highlight
+        (evil-ex-search-activate-highlight evil-ex-search-pattern)))))
+
+(use-package consult-dir
+  :ensure t
+  :bind (("C-x C-d" . consult-dir)
+         :map vertico-map
+         ("C-x C-d" . consult-dir)
+         ("C-x C-j" . consult-dir-jump-file)))
+
+
+(advice-add #'consult-line :after #'rune-consult-line-evil-history)
+
+;; ************************************************************
+;; Corfu
+;; ************************************************************
+(use-package embark
+  :bind
+  (("C-." . embark-act)
+   ("M-." . embark-dwim)
+   ("C-h B" . embark-bindings))
+  :config
+  (setq embark-prompter #'embark-completing-read-prompter)
+  (setq embark-indicators
+	'(embark-minimal-indicator
+	  embark-highlight-indicator
+	  embark-isearch-highlight-indicator))
+ ;(add-to-list 'display-buffer-alist
+ ;             '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+ ;               nil
+ ;               (window-parameters (mode-line-format . none))))
+  )
+
+(use-package embark-consult
+  :ensure t
+  :after (embark consult)
+  :demand t
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
 
 ;; ************************************************************
 ;; Which key
 ;; ************************************************************
 (use-package which-key
   :init (which-key-mode))
+
+;; ************************************************************
+;; iedit
+;; ************************************************************
+(use-package iedit)
 
 ;; ************************************************************
 ;; Rainbow Delimiters
@@ -69,15 +159,7 @@
 ;; ************************************************************
 ;; Helpful
 ;; ************************************************************
-(use-package helpful
-  :custom
-  (counsel-describe-function-function #'helpful-callable)
-  (counsel-describe-variable-function #'helpful-variable)
-  :bind
-  ([remap describe-function] . counsel-describe-function)
-  ([remap describe-command] . helpful-command)
-  ([remap describe-variable] . counsel-describe-variable)
-  ([remap describe-key] . helpful-key))
+(use-package helpful)
 
 ;; ************************************************************
 ;; Evil
@@ -85,21 +167,26 @@
 (use-package evil
 :init
   (setq evil-want-integration t)
+; (setq evil-ex-search-persistent-highlight nil)
   (setq evil-want-keybinding nil)
   (setq evil-want-Y-yank-to-eol t)
   (setq evil-want-fine-undo t)
   (setq evil-kill-on-visual-paste nil)
   (setq evil-want-C-u-scroll t)
   (setq evil-move-beyond-eol t)
+  (setq evil-search-module 'evil-search)
+
   :config
   (evil-mode 1)
   (setq evil-shift-width 2)
-  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-  (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
-  (define-key evil-normal-state-map (kbd "/") 'swiper)
-  (define-key evil-normal-state-map (kbd "C-w") 'evil-scroll-line-up)
 
-  ;; Use visual line motions even outside of visual-line-mode buffers
+; (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+  (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+  (define-key evil-normal-state-map (kbd "/") 'consult-line)
+  (define-key evil-normal-state-map (kbd "?") 'iedit-mode)
+  (define-key evil-normal-state-map (kbd "C-w") 'evil-scroll-line-up)
+  (define-key evil-normal-state-map (kbd "P") 'consult-yank-from-kill-ring)
+
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 
@@ -143,17 +230,6 @@
 
 (require 'org-indent)
 
-(use-package org-roam
-  :init
-  (setq org-roam-v2-ack t)
-  :custom
-  (org-roam-directory "~/mega/roam")
-  :bind (("C-c n l" . org-roam-buffer-toggle)
-         ("C-c n f" . org-roam-node-find)
-         ("C-c n i" . org-roam-node-insert))
-  :config
-  (org-roam-setup))
-
 ;; ************************************************************
 ;; General
 ;; ************************************************************
@@ -166,11 +242,18 @@
     :global-prefix "C-SPC")
 
   (rune/leader-keys
-;  "SPC" '(counsel-M-x :which-key "M-x")
-;  "."   '(counsel-find-file :which-key "find files in current dir")
+   "SPC" '(execute-extended-command :which-key "M-x")
+   "."   '(find-file :which-key "find files in current dir")
+   "b"   '(:ignore t :which-key "buffer")
+   "bb"  '(consult-buffer :which-key "switch buffer")
+   "bi"  '(ibuffer :which-key "ibuffer")
+   "bk"  '(kill-current-buffer :which-key "kill current buffer")
+   "bs"  '(save-buffer :which-key "save-buffer")
+   "bS"  '(write-file :which-key "write-file")
    "f"   '(:ignore t :which-key "files")
 ;  "ff"  '(counsel-fzf :which-key "fzf")
    "fp"  '(projectile-find-file :which-key "find file in project")
+   "fr"  '(consult-recent-file :which-key "recently opened files")
    "fo"  '(rune/browse-org :which-key "browse org folder")
    "fi"  '(rune/edit-init :which-key "edit init file")
    "fI"  '(rune/browse-init :which-key "browse init dir")
@@ -179,40 +262,36 @@
    "fs"  '(save-buffer :which-key "save-buffer")
    "fS"  '(write-file :which-key "write-file")
    "g"   '(magit :which-key "git")
-   "q"   '(:ignore t :which-key "quit")
-   "qK"  '(save-buffers-kill-emacs :which-key "save and quit")
-   "b"   '(:ignore t :which-key "buffer")
-;  "bb"  '(counsel-switch-buffer :which-key "switch buffer")
-   "bi"  '(ibuffer :which-key "ibuffer")
-   "bk"  '(kill-current-buffer :which-key "kill current buffer")
-   "bs"  '(save-buffer :which-key "save-buffer")
-   "bS"  '(write-file :which-key "write-file")
    "h"   '(:ignore t :which-key "help")
    "ha"  '(apropos :which-key "apropos")
 ;  "ht"  '(counsel-load-theme :which-key "load theme")
-;  "hf"  '(counsel-describe-function :which-key "describe function")
-;  "hv"  '(counsel-describe-variable :which-key "describe variable")
+   "hf"  '(helpful-function :which-key "describe function")
+   "hv"  '(helpful-variable :which-key "describe variable")
    "hk"  '(helpful-key :which-key "describe key")
-;  "hF"  '(counsel-faces :which-key "describe face")
+   "hF"  '(describe-face :which-key "describe face")
+   "j"   '(:ignore t :which-key "jump")
+   "ji"  '(consult-imenu :which-key "consult-imenu")
    "o"   '(:package org
            :keymap org-mode-map
            :which-key "org")
+   "p"   '(:package projectile
+           :keymap projectile-command-map
+           :which-key "project")
+   "q"   '(:ignore t :which-key "quit")
+   "qK"  '(save-buffers-kill-emacs :which-key "save and quit")
+   "qq"  '(save-buffers-kill-terminal :which-key "save and quit")
+   "s"   '(:ignore t :which-key "search")
+   "sd"  '(consult-ripgrep :which-key "consult-ripgrep")
    "w"   '(:package evil
            :keymap evil-window-map
            :which-key "window")
-   "p"   '(:package projectile
-           :keymap projectile-command-map
-           :which-key "project")))
+   ))
 
 ;; ************************************************************
 ;; Projectile
 ;; ************************************************************
 (use-package projectile
   :config (projectile-mode))
-(use-package counsel-projectile
- :after projectile
- :config
- (counsel-projectile-mode 1))
 
 ;; ************************************************************
 ;; Magit
@@ -269,11 +348,68 @@
   (interactive)
   (counsel-find-file "~/mega/org/"))
 
+(defvar doom-escape-hook nil
+  "A hook run when C-g is pressed (or ESC in normal mode, for evil users).
+
+More specifically, when `doom/escape' is pressed. If any hook returns non-nil,
+all hooks after it are ignored.")
+
+(defun doom/escape (&optional interactive)
+  "Run `doom-escape-hook'."
+  (interactive (list 'interactive))
+  (cond ((minibuffer-window-active-p (minibuffer-window))
+         ;; quit the minibuffer if open.
+         (when interactive
+           (setq this-command 'abort-recursive-edit))
+         (abort-recursive-edit))
+        ;; Run all escape hooks. If any returns non-nil, then stop there.
+        ((run-hook-with-args-until-success 'doom-escape-hook))
+        ;; don't abort macros
+        ((or defining-kbd-macro executing-kbd-macro) nil)
+        ;; Back to the default
+        ((unwind-protect (keyboard-quit)
+           (when interactive
+             (setq this-command 'keyboard-quit))))))
+
+(global-set-key [remap keyboard-quit] #'doom/escape)
+
+(defun +evil-disable-ex-highlights-h ()
+      "Disable ex search buffer highlights."
+      (when (evil-ex-hl-active-p 'evil-ex-search)
+        (evil-ex-nohighlight)
+        t))
+
+  (add-hook 'doom-escape-hook
+   #'+evil-disable-ex-highlights-h)
+
 ;; ************************************************************
 ;; Keybindings
 ;; ************************************************************
 (general-define-key "<escape>" 'keyboard-escape-quit)
 (general-define-key "C-b" 'counsel-switch-buffer)
+
+;; ************************************************************
+;; Doom modeline
+;; ************************************************************
+(use-package doom-modeline
+  :init (doom-modeline-mode 1))
+
+;; ************************************************************
+;; Doom themes
+;; ************************************************************
+(use-package doom-themes
+  :after doom-modeline
+  :config
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t)
+  (setq custom-theme-directory "~/build/rune/themes/")
+  (load-theme 'doom-sandstorm t))
+
+;; *************************************************************
+;; Splash screen
+;; *************************************************************
+(add-to-list 'load-path "~/build/emacs-splash")
+(require 'splash-screen)
 
 ;; ************************************************************
 ;; Faces
@@ -300,6 +436,10 @@
 ;; Miscellaneous
 ;; ************************************************************
 (setq make-backup-files nil) ; this stops the annoying ~ files
+(require 'recentf)
+(recentf-mode 1)
+(setq recentf-save-file "~/build/rune/.recentf")
+(setq truncate-lines t)
 
 ;; ************************************************************
 ;; Custom
