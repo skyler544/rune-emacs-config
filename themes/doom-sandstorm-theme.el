@@ -110,7 +110,7 @@
    (bookmark-face                     :background nil                                        )
 ;  (Man-overstrike                    :background nil                                        )
 
-   (Info-quoted                       :family "Hack"         :foreground fg                  )
+   (Info-quoted                       :family "Hack"         :foreground fg     :bold bold   )
    (info-node                         :foreground fg         :bold nil          :underline t )
    (info-xref-visited                 :foreground violet     :bold bold         :underline t )
    (info-menu-star                    :foreground fg                                         )
@@ -136,6 +136,7 @@
    (ivy-minibuffer-match-face-2       :background nil        :foreground dark-blue           )
    (ivy-minibuffer-match-face-3       :background nil        :foreground magenta             )
    (ivy-cursor                        :background fg                                         )
+   (shadow                                                   :foreground base7)
    (variable-pitch                    :background nil        :foreground fg :height 120      )
    (doom-modeline-info                :bold nil                                              )
    (doom-modeline-warning             :bold nil                                              )
@@ -181,6 +182,11 @@
    (magit-diff-added                  :background nil        :foreground teal                )
    (diff-refine-removed               :background nil        :foreground red                 )
    (diff-refine-added                 :background nil        :foreground teal                )
+
+   (corfu-bar                         :background green)
+   (corfu-border                      :background base0)
+   (corfu-background                  :background base0)
+   (corfu-current                     :background base0 :bold bold)
 
    ((paren-face-match &override)      :foreground fg                    :background fg-alt)
    ((paren-face-mismatch &override)   :foreground (doom-darken red 0.4) :background cyan))
