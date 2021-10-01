@@ -436,10 +436,15 @@ all hooks after it are ignored.")
 ;; Miscellaneous
 ;; ************************************************************
 (setq make-backup-files nil) ; this stops the annoying ~ files
-(require 'recentf)
-(recentf-mode 1)
-(setq recentf-save-file "~/build/rune/.recentf")
 (setq truncate-lines t)
+(setq word-wrap nil)
+
+(require 'recentf)
+(setq recentf-save-file "~/build/rune/.recentf")
+(setq recentf-max-saved-items 200)
+(setq recentf-max-menu-items 200)
+(recentf-mode 1)
+(run-at-time nil (* 5 60) 'recentf-save-list)
 
 ;; ************************************************************
 ;; Custom
