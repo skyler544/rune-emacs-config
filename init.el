@@ -25,6 +25,7 @@
 ;; wgrep
 ;; ************************************************************
 (use-package wgrep
+  :commands wgrep-change-to-wgrep-mode
   :config
   (setq wgrep-auto-save-buffer t))
 
@@ -32,20 +33,49 @@
 ;; Vertico
 ;; ************************************************************
 (use-package vertico
-  :custom
-  (vertico-cycle t)
   :config
   (setq file-name-shadow-properties '(invisible t intangible t))
   (file-name-shadow-mode +1)
+  :bind (:map vertico-map
+	      ("C-j" . vertico-next)
+	      ("C-k" . vertico-previous))
   :init
-  (vertico-mode))
+  (vertico-mode)
+  (setq vertico-cycle t)
+  (setq read-file-name-completion-ignore-case t
+	read-buffer-completion-ignore-case t))
+
+(use-package vertico-directory
+  :bind (:map vertico-map
+              ("RET" . vertico-directory-enter)
+              ("DEL" . vertico-directory-delete-char)
+              ("M-DEL" . vertico-directory-delete-word)))
+
+(use-package savehist
+  :init
+  (savehist-mode))
+
+(use-package emacs
+  :init
+  (defun crm-indicator (args)
+    (cons (concat "[CRM] " (car args)) (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+  (setq read-extended-command-predicate
+        #'command-completion-default-include-p)
+
+  (setq enable-recursive-minibuffers t))
 
 ;; ************************************************************
 ;; Orderless
 ;; ************************************************************
 (use-package orderless
   :custom
-  (completion-styles '(orderless)))
+  (completion-styles '(substring orderless)))
 
 ;; ************************************************************
 ;; Marginalia
@@ -62,7 +92,6 @@
   (corfu-cycle t)
   (corfu-auto t)
   (corfu-quit-at-boundary t)
-; (corfu-quit-no-match t)
 
   :bind (:map corfu-map
          ("TAB" . corfu-next)
@@ -83,6 +112,8 @@
   :config
   (advice-add #'completing-read-multiple
               :override #'consult-completing-read-multiple)
+  (advice-add #'multi-occur :override #'consult-multi-occur)
+
   (setq completion-in-region-function
       (lambda (&rest args)
         (apply (if vertico-mode
@@ -90,6 +121,7 @@
                  #'completion--in-region)
                args))))
 
+; enables swiper-isearch like behavior for consult-line
 (defun rune-consult-line-evil-history (&rest _)
   "Add latest `consult-line' search pattern to the evil search history ring.
 This only works with orderless and for the first component of the search."
@@ -106,9 +138,8 @@ This only works with orderless and for the first component of the search."
   :ensure t
   :bind (("C-x C-d" . consult-dir)
          :map vertico-map
-         ("C-x C-d" . consult-dir)
-         ("C-x C-j" . consult-dir-jump-file)))
-
+         ("C-d" . consult-dir)
+         ("C-f" . consult-dir-jump-file)))
 
 (advice-add #'consult-line :after #'rune-consult-line-evil-history)
 
@@ -120,17 +151,13 @@ This only works with orderless and for the first component of the search."
   (("C-." . embark-act)
    ("M-." . embark-dwim)
    ("C-h B" . embark-bindings))
+
   :config
   (setq embark-prompter #'embark-completing-read-prompter)
   (setq embark-indicators
 	'(embark-minimal-indicator
 	  embark-highlight-indicator
-	  embark-isearch-highlight-indicator))
- ;(add-to-list 'display-buffer-alist
- ;             '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
- ;               nil
- ;               (window-parameters (mode-line-format . none))))
-  )
+	  embark-isearch-highlight-indicator)))
 
 (use-package embark-consult
   :ensure t
@@ -167,7 +194,6 @@ This only works with orderless and for the first component of the search."
 (use-package evil
 :init
   (setq evil-want-integration t)
-; (setq evil-ex-search-persistent-highlight nil)
   (setq evil-want-keybinding nil)
   (setq evil-want-Y-yank-to-eol t)
   (setq evil-want-fine-undo t)
@@ -180,7 +206,6 @@ This only works with orderless and for the first component of the search."
   (evil-mode 1)
   (setq evil-shift-width 2)
 
-; (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
   (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
   (define-key evil-normal-state-map (kbd "/") 'consult-line)
   (define-key evil-normal-state-map (kbd "?") 'iedit-mode)
@@ -197,6 +222,13 @@ This only works with orderless and for the first component of the search."
   :after evil
   :config
   (evil-collection-init))
+
+(use-package evil-surround
+  :config
+  (global-evil-surround-mode 1)
+  (add-hook 'emacs-lisp-mode-hook
+	    (lambda ()
+              (push '(?` . ("`" . "'")) evil-surround-pairs-alist))))
 
 (use-package evil-mc
   :after (evil general)
@@ -251,7 +283,7 @@ This only works with orderless and for the first component of the search."
    "bs"  '(save-buffer :which-key "save-buffer")
    "bS"  '(write-file :which-key "write-file")
    "f"   '(:ignore t :which-key "files")
-;  "ff"  '(counsel-fzf :which-key "fzf")
+   "e"   '(embark-act :which-key "embark-act")
    "fp"  '(projectile-find-file :which-key "find file in project")
    "fr"  '(consult-recent-file :which-key "recently opened files")
    "fo"  '(rune/browse-org :which-key "browse org folder")
@@ -264,7 +296,6 @@ This only works with orderless and for the first component of the search."
    "g"   '(magit :which-key "git")
    "h"   '(:ignore t :which-key "help")
    "ha"  '(apropos :which-key "apropos")
-;  "ht"  '(counsel-load-theme :which-key "load theme")
    "hf"  '(helpful-function :which-key "describe function")
    "hv"  '(helpful-variable :which-key "describe variable")
    "hk"  '(helpful-key :which-key "describe key")
@@ -292,6 +323,15 @@ This only works with orderless and for the first component of the search."
 ;; ************************************************************
 (use-package projectile
   :config (projectile-mode))
+
+;; ************************************************************
+;; Smartparens
+;; ************************************************************
+(use-package smartparens
+  :init
+  (require 'smartparens-config)
+  :config
+  (add-hook 'prog-mode-hook #'smartparens-mode))
 
 ;; ************************************************************
 ;; Magit
@@ -401,13 +441,11 @@ all hooks after it are ignored.")
 (global-set-key [remap keyboard-quit] #'doom/escape)
 
 (defun +evil-disable-ex-highlights-h ()
-      "Disable ex search buffer highlights."
-      (when (evil-ex-hl-active-p 'evil-ex-search)
-        (evil-ex-nohighlight)
-        t))
+  "Disable ex search buffer highlights."
+  (when (evil-ex-hl-active-p 'evil-ex-search)
+    (evil-ex-nohighlight) t))
 
-  (add-hook 'doom-escape-hook
-   #'+evil-disable-ex-highlights-h)
+(add-hook 'doom-escape-hook #'+evil-disable-ex-highlights-h)
 
 ;; ************************************************************
 ;; Keybindings
@@ -445,6 +483,8 @@ all hooks after it are ignored.")
 (setq recentf-max-menu-items 200)
 (recentf-mode 1)
 (run-at-time nil (* 5 60) 'recentf-save-list)
+
+(use-package snow)
 
 ;; ************************************************************
 ;; Custom
