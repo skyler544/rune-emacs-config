@@ -3,8 +3,8 @@
 *.log
 tmp/
 
-history/
-tramp/
+history
+tramp
 eshell/
 elpa/
 tutorial/
