@@ -486,6 +486,9 @@ all hooks after it are ignored.")
 
 (use-package snow)
 
+(require 'info-look)
+(info-lookup-setup-mode 'symbol 'emacs-lisp-mode)
+
 ;; ************************************************************
 ;; Custom
 ;; ************************************************************
