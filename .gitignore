@@ -3,8 +3,10 @@
 *.log
 tmp/
 
+history/
+tramp/
+eshell/
 elpa/
-emacs-beginners.org
 tutorial/
 custom.el
 transient/
