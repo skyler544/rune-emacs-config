@@ -321,6 +321,33 @@ This only works with orderless and for the first component of the search."
   :hook (dired-mode . all-the-icons-dired-mode))
 
 ;; ************************************************************
+;; Doom modeline
+;; ************************************************************
+(use-package doom-modeline
+  :init (doom-modeline-mode 1))
+
+;; ************************************************************
+;; Doom themes
+;; ************************************************************
+(use-package doom-themes
+  :after doom-modeline
+  :config
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t)
+  (setq custom-theme-directory "~/build/rune/themes/")
+  (load-theme 'doom-sandstorm t))
+
+;; *************************************************************
+;; Splash screen
+;; *************************************************************
+(add-to-list 'load-path "~/build/emacs-splash")
+(require 'splash-screen)
+
+;; ************************************************************
+;; Faces
+;; ************************************************************
+
+;; ************************************************************
 ;; Miscellaneous Functions
 ;; ************************************************************
 (defun rune/edit-init ()
@@ -387,33 +414,6 @@ all hooks after it are ignored.")
 ;; ************************************************************
 (general-define-key "<escape>" 'keyboard-escape-quit)
 (general-define-key "C-b" 'counsel-switch-buffer)
-
-;; ************************************************************
-;; Doom modeline
-;; ************************************************************
-(use-package doom-modeline
-  :init (doom-modeline-mode 1))
-
-;; ************************************************************
-;; Doom themes
-;; ************************************************************
-(use-package doom-themes
-  :after doom-modeline
-  :config
-  (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t)
-  (setq custom-theme-directory "~/build/rune/themes/")
-  (load-theme 'doom-sandstorm t))
-
-;; *************************************************************
-;; Splash screen
-;; *************************************************************
-(add-to-list 'load-path "~/build/emacs-splash")
-(require 'splash-screen)
-
-;; ************************************************************
-;; Faces
-;; ************************************************************
 
 ;; ************************************************************
 ;; Garbage collection
