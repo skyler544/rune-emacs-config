@@ -47,6 +47,7 @@
 	read-buffer-completion-ignore-case t))
 
 (use-package vertico-directory
+  :load-path "~/build/rune/extensions/"
   :bind (:map vertico-map
               ("RET" . vertico-directory-enter)
               ("DEL" . vertico-directory-delete-char)
@@ -148,6 +149,11 @@ This only works with orderless and for the first component of the search."
 	  embark-highlight-indicator
 	  embark-isearch-highlight-indicator)))
 
+(defun +embark-sudo-edit ()
+  (interactive)
+  (find-file (concat "/sudo:root@localhost:" 
+                     (expand-file-name (read-file-name "Find file as root: ")))))
+
 (use-package embark-consult
   :ensure t
   :after (embark consult)
@@ -203,6 +209,15 @@ This only works with orderless and for the first component of the search."
       (enlarge-window arg)))
 
   (require 'rune-window-nav-hydra))
+
+;; ************************************************************
+;; Smooth Scrolling
+;; ************************************************************
+(use-package smooth-scrolling
+  :init
+  (require 'smooth-scrolling)
+  (smooth-scrolling-mode 1)
+  (setq smooth-scroll-margin 2))
 
 ;; ************************************************************
 ;; iedit
@@ -419,10 +434,6 @@ This only works with orderless and for the first component of the search."
 (require 'splash-screen)
 
 ;; ************************************************************
-;; Faces
-;; ************************************************************
-
-;; ************************************************************
 ;; Miscellaneous Functions
 ;; ************************************************************
 (defun rune/edit-init ()
@@ -500,8 +511,6 @@ all hooks after it are ignored.")
         #'command-completion-default-include-p)
 
   (setq enable-recursive-minibuffers t)
-  ;; (setq scroll-step            1
-  ;; 	scroll-conservatively  10000)
   (setq make-backup-files nil) ; this stops the annoying ~ files
   (setq truncate-lines t)
   (setq word-wrap nil)
@@ -513,16 +522,19 @@ all hooks after it are ignored.")
   (recentf-mode 1)
   (run-at-time nil (* 5 60) 'recentf-save-list)
 
-  (use-package snow)
+  (setq auth-sources "~/build/rune/.authinfo")
+
+  (setq tramp-auto-save-directory "~/build/rune/tramp-autosave")
+  (setq backup-enable-predicate
+	(lambda (name)
+          (and (normal-backup-enable-predicate name)
+               (not
+		(let ((method (file-remote-p name 'method)))
+                  (when (stringp method)
+                    (member method '("su" "sudo"))))))))
 
   (require 'info-look)
   (info-lookup-setup-mode 'symbol 'emacs-lisp-mode))
-
-(use-package smooth-scrolling
-  :init
-  (require 'smooth-scrolling)
-  (smooth-scrolling-mode 1)
-  (setq smooth-scroll-margin 2))
 
 ;; ************************************************************
 ;; Custom
