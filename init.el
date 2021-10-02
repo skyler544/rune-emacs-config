@@ -72,6 +72,16 @@
   (marginalia-mode))
 
 ;; ************************************************************
+;; Dogears
+;; ************************************************************
+(use-package dogears
+  :init
+  (dogears-mode)
+  :config
+  (require 'savehist)
+  (add-to-list 'savehist-additional-variables 'dogears-list))
+
+;; ************************************************************
 ;; Corfu
 ;; ************************************************************
 (use-package corfu
@@ -108,8 +118,20 @@
           (apply (if vertico-mode
                      #'consult-completion-in-region
                    #'completion--in-region)
-		 args))))
+		 args)))
 
+  (add-to-list 'consult-buffer-sources
+	       (list :name "Dogears"
+		     :narrow ?d
+		     :category 'bookmark
+		     :items '(lambda ()
+			      (cl-loop for place in dogears-list
+			               collect (cons (dogears--format-record place)
+						     place)))
+		     :action '(list (cons "Go to " #'dogears-go)))
+	       'append)  
+
+  )
 
 ; enables swiper-isearch like behavior for consult-line
 (defun rune-consult-line-evil-history (&rest _)
