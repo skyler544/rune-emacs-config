@@ -41,7 +41,8 @@
 	      ("C-k" . vertico-previous))
   :init
   (vertico-mode)
-  (setq vertico-cycle t)
+  (setq vertico-cycle t
+	vertico-count 15)
   (setq read-file-name-completion-ignore-case t
 	read-buffer-completion-ignore-case t))
 
@@ -54,21 +55,6 @@
 (use-package savehist
   :init
   (savehist-mode))
-
-(use-package emacs
-  :init
-  (defun crm-indicator (args)
-    (cons (concat "[CRM] " (car args)) (cdr args)))
-  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
-
-  (setq minibuffer-prompt-properties
-        '(read-only t cursor-intangible t face minibuffer-prompt))
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-
-  (setq read-extended-command-predicate
-        #'command-completion-default-include-p)
-
-  (setq enable-recursive-minibuffers t))
 
 ;; ************************************************************
 ;; Orderless
@@ -83,6 +69,16 @@
 (use-package marginalia
   :init
   (marginalia-mode))
+
+;; ************************************************************
+;; Dogears
+;; ************************************************************
+(use-package dogears
+  :init
+  (dogears-mode)
+  :config
+  (require 'savehist)
+  (add-to-list 'savehist-additional-variables 'dogears-list))
 
 ;; ************************************************************
 ;; Corfu
@@ -110,16 +106,19 @@
 ;; ************************************************************
 (use-package consult
   :config
+  (consult-customize consult-buffer :preview-key (kbd "M-/"))
+
   (advice-add #'completing-read-multiple
               :override #'consult-completing-read-multiple)
   (advice-add #'multi-occur :override #'consult-multi-occur)
 
   (setq completion-in-region-function
-      (lambda (&rest args)
-        (apply (if vertico-mode
-                   #'consult-completion-in-region
-                 #'completion--in-region)
-               args))))
+	(lambda (&rest args)
+          (apply (if vertico-mode
+                     #'consult-completion-in-region
+                   #'completion--in-region)
+		 args))))
+
 
 ; enables swiper-isearch like behavior for consult-line
 (defun rune-consult-line-evil-history (&rest _)
@@ -173,6 +172,49 @@ This only works with orderless and for the first component of the search."
   :init (which-key-mode))
 
 ;; ************************************************************
+;; Hydra
+;; ************************************************************
+(use-package hydra
+  :init
+  (add-to-list 'load-path "~/build/rune/modules/")
+  :config
+  (require 'windmove)
+
+  (defun hydra-move-splitter-left (arg)
+    "Move window splitter left."
+    (interactive "p")
+    (if (let ((windmove-wrap-around))
+          (windmove-find-other-window 'right))
+	(shrink-window-horizontally arg)
+      (enlarge-window-horizontally arg)))
+
+  (defun hydra-move-splitter-right (arg)
+    "Move window splitter right."
+    (interactive "p")
+    (if (let ((windmove-wrap-around))
+          (windmove-find-other-window 'right))
+	(enlarge-window-horizontally arg)
+      (shrink-window-horizontally arg)))
+
+  (defun hydra-move-splitter-up (arg)
+    "Move window splitter up."
+    (interactive "p")
+    (if (let ((windmove-wrap-around))
+          (windmove-find-other-window 'up))
+	(enlarge-window arg)
+      (shrink-window arg)))
+
+  (defun hydra-move-splitter-down (arg)
+    "Move window splitter down."
+    (interactive "p")
+    (if (let ((windmove-wrap-around))
+          (windmove-find-other-window 'up))
+	(shrink-window arg)
+      (enlarge-window arg)))
+
+  (require 'rune-window-nav-hydra))
+
+;; ************************************************************
 ;; iedit
 ;; ************************************************************
 (use-package iedit)
@@ -201,6 +243,7 @@ This only works with orderless and for the first component of the search."
   (setq evil-want-C-u-scroll t)
   (setq evil-move-beyond-eol t)
   (setq evil-search-module 'evil-search)
+  (setq evil-undo-system 'undo-redo)
 
   :config
   (evil-mode 1)
@@ -208,7 +251,9 @@ This only works with orderless and for the first component of the search."
 
   (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
   (define-key evil-normal-state-map (kbd "/") 'consult-line)
+  (define-key evil-visual-state-map (kbd "/") 'consult-line)
   (define-key evil-normal-state-map (kbd "?") 'iedit-mode)
+  (define-key evil-visual-state-map (kbd "?") 'iedit-mode)
   (define-key evil-normal-state-map (kbd "C-w") 'evil-scroll-line-up)
   (define-key evil-normal-state-map (kbd "P") 'consult-yank-from-kill-ring)
 
@@ -268,11 +313,11 @@ This only works with orderless and for the first component of the search."
 (use-package general
   :config
   (general-evil-setup t)
+
   (general-create-definer rune/leader-keys
     :keymaps '(normal insert visual emacs)
     :prefix "SPC"
     :global-prefix "C-SPC")
-
   (rune/leader-keys
    "SPC" '(execute-extended-command :which-key "M-x")
    "."   '(find-file :which-key "find files in current dir")
@@ -301,7 +346,6 @@ This only works with orderless and for the first component of the search."
    "hk"  '(helpful-key :which-key "describe key")
    "hF"  '(describe-face :which-key "describe face")
    "j"   '(:ignore t :which-key "jump")
-   "ji"  '(consult-imenu :which-key "consult-imenu")
    "o"   '(:package org
            :keymap org-mode-map
            :which-key "org")
@@ -312,11 +356,12 @@ This only works with orderless and for the first component of the search."
    "qK"  '(save-buffers-kill-emacs :which-key "save and quit")
    "qq"  '(save-buffers-kill-terminal :which-key "save and quit")
    "s"   '(:ignore t :which-key "search")
+   "si"  '(consult-imenu :which-key "consult-imenu")
    "sd"  '(consult-ripgrep :which-key "consult-ripgrep")
    "w"   '(:package evil
            :keymap evil-window-map
            :which-key "window")
-   ))
+   "ww"  '(+hydra/window-nav/body :which-key "resize window")))
 
 ;; ************************************************************
 ;; Projectile
@@ -395,26 +440,6 @@ This only works with orderless and for the first component of the search."
   (interactive)
   (find-file "~/build/rune/init.el"))
 
-(defun rune/browse-init ()
-  "Browse the init folder."
-  (interactive)
-  (counsel-find-file "~/build/rune/"))
-
-(defun rune/browse-mega ()
-  "Browse Mega."
-  (interactive)
-  (counsel-find-file "~/mega/"))
-
-(defun rune/browse-work ()
-  "Browse the work folder."
-  (interactive)
-  (counsel-find-file "~/mega/work/"))
-
-(defun rune/browse-org ()
-  "Browse the org folder."
-  (interactive)
-  (counsel-find-file "~/mega/org/"))
-
 (defvar doom-escape-hook nil
   "A hook run when C-g is pressed (or ESC in normal mode, for evil users).
 
@@ -463,8 +488,6 @@ all hooks after it are ignored.")
 (defun doom-defer-garbage-collection-h ()
   (setq gc-cons-threshold most-positive-fixnum))
 (defun doom-restore-garbage-collection-h ()
-  ;; Defer it so that commands launched immediately after will enjoy the
-  ;; benefits.
   (run-at-time
    1 nil (lambda () (setq gc-cons-threshold 16777216))))
 (add-hook 'minibuffer-setup-hook #'doom-defer-garbage-collection-h)
@@ -473,21 +496,43 @@ all hooks after it are ignored.")
 ;; ************************************************************
 ;; Miscellaneous
 ;; ************************************************************
-(setq make-backup-files nil) ; this stops the annoying ~ files
-(setq truncate-lines t)
-(setq word-wrap nil)
+(use-package emacs
+  :init
+  (defun crm-indicator (args)
+    (cons (concat "[CRM] " (car args)) (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
-(require 'recentf)
-(setq recentf-save-file "~/build/rune/.recentf")
-(setq recentf-max-saved-items 200)
-(setq recentf-max-menu-items 200)
-(recentf-mode 1)
-(run-at-time nil (* 5 60) 'recentf-save-list)
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
-(use-package snow)
+  (setq read-extended-command-predicate
+        #'command-completion-default-include-p)
 
-(require 'info-look)
-(info-lookup-setup-mode 'symbol 'emacs-lisp-mode)
+  (setq enable-recursive-minibuffers t)
+  ;; (setq scroll-step            1
+  ;; 	scroll-conservatively  10000)
+  (setq make-backup-files nil) ; this stops the annoying ~ files
+  (setq truncate-lines t)
+  (setq word-wrap nil)
+
+  (require 'recentf)
+  (setq recentf-save-file "~/build/rune/.recentf")
+  (setq recentf-max-saved-items 200)
+  (setq recentf-max-menu-items 200)
+  (recentf-mode 1)
+  (run-at-time nil (* 5 60) 'recentf-save-list)
+
+  (use-package snow)
+
+  (require 'info-look)
+  (info-lookup-setup-mode 'symbol 'emacs-lisp-mode))
+
+(use-package smooth-scrolling
+  :init
+  (require 'smooth-scrolling)
+  (smooth-scrolling-mode 1)
+  (setq smooth-scroll-margin 2))
 
 ;; ************************************************************
 ;; Custom
