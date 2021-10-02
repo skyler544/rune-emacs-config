@@ -71,16 +71,6 @@
   (marginalia-mode))
 
 ;; ************************************************************
-;; Dogears
-;; ************************************************************
-(use-package dogears
-  :init
-  (dogears-mode)
-  :config
-  (require 'savehist)
-  (add-to-list 'savehist-additional-variables 'dogears-list))
-
-;; ************************************************************
 ;; Corfu
 ;; ************************************************************
 (use-package corfu
