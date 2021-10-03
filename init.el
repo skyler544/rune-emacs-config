@@ -30,6 +30,16 @@
   (setq wgrep-auto-save-buffer t))
 
 ;; ************************************************************
+;; tree-sitter
+;; ************************************************************
+(use-package tree-sitter
+  :init
+  (global-tree-sitter-mode)
+  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+
+(use-package tree-sitter-langs)
+
+;; ************************************************************
 ;; Vertico
 ;; ************************************************************
 (use-package vertico
@@ -78,13 +88,13 @@
   :custom
   (corfu-cycle t)
   (corfu-auto t)
-  (corfu-quit-at-boundary t)
+  (corfu-quit-at-boundary nil)
 
-  :bind (:map corfu-map
-         ("TAB" . corfu-next)
-         ([tab] . corfu-next)
-         ("S-TAB" . corfu-previous)
-         ([backtab] . corfu-previous))
+; :bind (:map corfu-map
+;        ("TAB" . corfu-next)
+;        ([tab] . corfu-next)
+;        ("S-TAB" . corfu-previous)
+;        ([backtab] . corfu-previous))
 
   :config
   (setq corfu-auto-delay 0.3)
@@ -476,7 +486,7 @@ all hooks after it are ignored.")
 ;; Keybindings
 ;; ************************************************************
 (general-define-key "<escape>" 'keyboard-escape-quit)
-(general-define-key "C-b" 'counsel-switch-buffer)
+(general-define-key "C-<tab>" 'completion-at-point)
 
 ;; ************************************************************
 ;; Garbage collection

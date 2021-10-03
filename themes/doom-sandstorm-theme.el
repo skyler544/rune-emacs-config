@@ -54,13 +54,13 @@
    (doc-comments              base7                 )
    (constants                 orange                )
    (functions                 magenta               )
-   (keywords                  light-grey            )
+   (keywords                  dark-blue             )
    (methods                   teal                  )
    (operators                 green-br              )
    (type                      blue                  )
    (strings                   green                 )
    (variables                 violet                )
-   (numbers                   light-grey            )
+   (numbers                   red                   )
    (region                    base0                 )
    (error                     red                   )
    (warning                   yellow                )
@@ -86,6 +86,8 @@
    (font-lock-doc-face
     :inherit 'font-lock-comment-face
     :foreground doc-comments)
+   (font-lock-keyword-face
+    :foreground keywords)
 
    (mode-line
     :background modeline-bg :foreground modeline-fg)
