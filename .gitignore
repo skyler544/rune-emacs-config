@@ -12,3 +12,10 @@ custom.el
 transient/
 projectile-bookmarks.eld
 .recentf
+.cache/
+.dap-breakpoints
+.lsp*
+bookmarks
+eclipse.jdt.ls/
+irony/
+workspace/

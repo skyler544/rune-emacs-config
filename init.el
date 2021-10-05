@@ -17,7 +17,8 @@
 (unless (package-installed-p 'use-package)
    (package-install 'use-package))
 
-(require 'use-package)
+(eval-when-compile
+  (require 'use-package))
 
 (setq use-package-always-ensure t)
 
@@ -28,6 +29,16 @@
   :commands wgrep-change-to-wgrep-mode
   :config
   (setq wgrep-auto-save-buffer t))
+
+;; ************************************************************
+;; Dogears
+;; ************************************************************
+(use-package dogears
+  :init
+  (dogears-mode)
+  :config
+  (require 'savehist)
+  (add-to-list 'savehist-additional-variables 'dogears-list))
 
 ;; ************************************************************
 ;; tree-sitter
@@ -47,14 +58,12 @@
   (setq file-name-shadow-properties '(invisible t intangible t))
   (file-name-shadow-mode +1)
   :bind (:map vertico-map
-	      ("C-j" . vertico-next)
-	      ("C-k" . vertico-previous))
+              ("C-j" . vertico-next)
+              ("C-k" . vertico-previous))
   :init
   (vertico-mode)
   (setq vertico-cycle t
-	vertico-count 15)
-  (setq read-file-name-completion-ignore-case t
-	read-buffer-completion-ignore-case t))
+        vertico-count 15))
 
 (use-package vertico-directory
   :load-path "~/build/rune/extensions/"
@@ -78,6 +87,8 @@
 ;; Marginalia
 ;; ************************************************************
 (use-package marginalia
+  :bind (:map vertico-map
+              ("M-A" . marginalia-cycle))
   :init
   (marginalia-mode))
 
@@ -90,11 +101,9 @@
   (corfu-auto t)
   (corfu-quit-at-boundary nil)
 
-; :bind (:map corfu-map
-;        ("TAB" . corfu-next)
-;        ([tab] . corfu-next)
-;        ("S-TAB" . corfu-previous)
-;        ([backtab] . corfu-previous))
+  :bind (:map corfu-map
+         ("C-TAB" . corfu-next)
+         ("S-TAB" . corfu-previous))
 
   :config
   (setq corfu-auto-delay 0.3)
@@ -143,7 +152,7 @@ This only works with orderless and for the first component of the search."
 (advice-add #'consult-line :after #'rune-consult-line-evil-history)
 
 ;; ************************************************************
-;; Corfu
+;; Embark
 ;; ************************************************************
 (use-package embark
   :bind
@@ -171,10 +180,38 @@ This only works with orderless and for the first component of the search."
   (embark-collect-mode . consult-preview-at-point-mode))
 
 ;; ************************************************************
+;; LSP
+;; ************************************************************
+(use-package flycheck)
+
+(use-package lsp-mode
+  :commands lsp
+  :hook (lsp-mode . lsp-enable-which-key-integration)
+  :config
+  (setq lsp-headerline-breadcrumb-enable nil))
+
+(use-package lsp-ui
+  :config
+  (lsp-ui-doc-enable t)
+  (setq lsp-ui-doc-delay 3))
+
+(use-package lsp-java
+  :init
+  (add-hook 'java-mode-hook #'lsp))
+
+;; ************************************************************
 ;; Which key
 ;; ************************************************************
 (use-package which-key
   :init (which-key-mode))
+
+;; ************************************************************
+;; C 
+;; ************************************************************
+(use-package irony
+  :init
+  (add-hook 'c-mode-hook 'irony-mode)
+  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
 
 ;; ************************************************************
 ;; Hydra
@@ -226,7 +263,7 @@ This only works with orderless and for the first component of the search."
   :init
   (require 'smooth-scrolling)
   (smooth-scrolling-mode 1)
-  (setq smooth-scroll-margin 2))
+  (setq smooth-scroll-margin 1))
 
 ;; ************************************************************
 ;; iedit
@@ -360,6 +397,9 @@ This only works with orderless and for the first component of the search."
    "hk"  '(helpful-key :which-key "describe key")
    "hF"  '(describe-face :which-key "describe face")
    "j"   '(:ignore t :which-key "jump")
+   "l"   '(:package lsp-mode
+           :keymap lsp-mode-map
+           :which-key "lsp")
    "o"   '(:package org
            :keymap org-mode-map
            :which-key "org")
@@ -372,6 +412,7 @@ This only works with orderless and for the first component of the search."
    "s"   '(:ignore t :which-key "search")
    "si"  '(consult-imenu :which-key "consult-imenu")
    "sd"  '(consult-ripgrep :which-key "consult-ripgrep")
+   "t"   '(rune/popup-eshell :which-key "eshell")
    "w"   '(:package evil
            :keymap evil-window-map
            :which-key "window")
@@ -442,6 +483,26 @@ This only works with orderless and for the first component of the search."
 (add-to-list 'load-path "~/build/emacs-splash")
 (require 'splash-screen)
 
+;; *************************************************************
+;; Popper
+;; *************************************************************
+(use-package popper
+  :bind (("C-;"   . popper-toggle-latest)
+         ("C-'"   . popper-cycle)
+         ("C-/" . popper-toggle-type))
+  :init
+  (setq popper-mode-line nil)
+  (setq popper-reference-buffers
+        '("\\*Messages\\*"
+          "Output\\*$"
+          "\\*Async Shell Command\\*"
+          help-mode
+          helpful-mode
+          eshell-mode
+          compilation-mode))
+  (popper-mode +1)
+  (popper-echo-mode +1)) 
+
 ;; ************************************************************
 ;; Miscellaneous Functions
 ;; ************************************************************
@@ -489,25 +550,22 @@ all hooks after it are ignored.")
 (general-define-key "C-<tab>" 'completion-at-point)
 
 ;; ************************************************************
-;; Garbage collection
-;; ************************************************************
-(add-hook 'emacs-startup-hook
-  (lambda ()
-    (setq gc-cons-threshold 16777216 ; 16mb
-          gc-cons-percentage 0.1)))
-(defun doom-defer-garbage-collection-h ()
-  (setq gc-cons-threshold most-positive-fixnum))
-(defun doom-restore-garbage-collection-h ()
-  (run-at-time
-   1 nil (lambda () (setq gc-cons-threshold 16777216))))
-(add-hook 'minibuffer-setup-hook #'doom-defer-garbage-collection-h)
-(add-hook 'minibuffer-exit-hook #'doom-restore-garbage-collection-h)
-
-;; ************************************************************
 ;; Miscellaneous
 ;; ************************************************************
 (use-package emacs
   :init
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              (setq gc-cons-threshold 16777216 ; 16mb
+                    gc-cons-percentage 0.1)))
+  (defun doom-defer-garbage-collection-h ()
+    (setq gc-cons-threshold most-positive-fixnum))
+  (defun doom-restore-garbage-collection-h ()
+    (run-at-time
+     1 nil (lambda () (setq gc-cons-threshold 16777216))))
+  (add-hook 'minibuffer-setup-hook #'doom-defer-garbage-collection-h)
+  (add-hook 'minibuffer-exit-hook #'doom-restore-garbage-collection-h)
+
   (defun crm-indicator (args)
     (cons (concat "[CRM] " (car args)) (cdr args)))
   (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
@@ -519,10 +577,15 @@ all hooks after it are ignored.")
   (setq read-extended-command-predicate
         #'command-completion-default-include-p)
 
+  (setq read-file-name-completion-ignore-case t
+        read-buffer-completion-ignore-case t)
+
+  (setq byte-compile-warnings nil)
   (setq enable-recursive-minibuffers t)
   (setq make-backup-files nil) ; this stops the annoying ~ files
   (setq truncate-lines t)
   (setq word-wrap nil)
+  (setq-default indent-tabs-mode nil)
 
   (require 'recentf)
   (setq recentf-save-file "~/build/rune/.recentf")
@@ -531,21 +594,38 @@ all hooks after it are ignored.")
   (recentf-mode 1)
   (run-at-time nil (* 5 60) 'recentf-save-list)
 
+  (setq custom-file "~/build/rune/custom.el")
+
   (setq auth-sources "~/build/rune/.authinfo")
 
   (setq tramp-auto-save-directory "~/build/rune/tramp-autosave")
   (setq backup-enable-predicate
-	(lambda (name)
+        (lambda (name)
           (and (normal-backup-enable-predicate name)
                (not
-		(let ((method (file-remote-p name 'method)))
+                (let ((method (file-remote-p name 'method)))
                   (when (stringp method)
                     (member method '("su" "sudo"))))))))
 
+  (defun rune/popup-eshell ()
+    (interactive)
+    (setq eesh (eshell))
+    (popper-lower-to-popup eesh))
+
+  (defun delete-file-and-buffer ()
+    "Kill the current buffer and delete the file it is visiting."
+    (interactive)
+    (let ((filename (buffer-file-name)))
+      (if filename (if (y-or-n-p (concat "Really delete '" filename "'?"))
+                       (progn
+                         (delete-file filename)
+                         (message "Deleted %s." filename)
+                         (kill-buffer)))
+        (message "Failed."))))
+
+  (defun rune/disable-linum-mode ()
+    (display-line-numbers-mode -1))
+  (add-hook 'eshell-mode-hook 'rune/disable-linum-mode)
+
   (require 'info-look)
   (info-lookup-setup-mode 'symbol 'emacs-lisp-mode))
-
-;; ************************************************************
-;; Custom
-;; ************************************************************
-(setq custom-file "~/build/rune/custom.el")
