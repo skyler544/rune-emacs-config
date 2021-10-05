@@ -66,7 +66,7 @@
         vertico-count 15))
 
 (use-package vertico-directory
-  :load-path "~/build/rune/extensions/"
+  :load-path "extensions/"
   :bind (:map vertico-map
               ("RET" . vertico-directory-enter)
               ("DEL" . vertico-directory-delete-char)
@@ -123,11 +123,11 @@
   (advice-add #'multi-occur :override #'consult-multi-occur)
 
   (setq completion-in-region-function
-	(lambda (&rest args)
+        (lambda (&rest args)
           (apply (if vertico-mode
                      #'consult-completion-in-region
                    #'completion--in-region)
-		 args))))
+                 args))))
 
 ; enables swiper-isearch like behavior for consult-line
 (defun rune-consult-line-evil-history (&rest _)
@@ -142,14 +142,13 @@ This only works with orderless and for the first component of the search."
       (when evil-ex-search-persistent-highlight
         (evil-ex-search-activate-highlight evil-ex-search-pattern)))))
 
+(advice-add #'consult-line :after #'rune-consult-line-evil-history)
+
 (use-package consult-dir
-  :ensure t
   :bind (("C-x C-d" . consult-dir)
          :map vertico-map
          ("C-d" . consult-dir)
          ("C-f" . consult-dir-jump-file)))
-
-(advice-add #'consult-line :after #'rune-consult-line-evil-history)
 
 ;; ************************************************************
 ;; Embark
@@ -163,9 +162,9 @@ This only works with orderless and for the first component of the search."
   :config
   (setq embark-prompter #'embark-completing-read-prompter)
   (setq embark-indicators
-	'(embark-minimal-indicator
-	  embark-highlight-indicator
-	  embark-isearch-highlight-indicator)))
+        '(embark-minimal-indicator
+          embark-highlight-indicator
+          embark-isearch-highlight-indicator)))
 
 (defun +embark-sudo-edit ()
   (interactive)
@@ -195,10 +194,6 @@ This only works with orderless and for the first component of the search."
   (lsp-ui-doc-enable t)
   (setq lsp-ui-doc-delay 3))
 
-(use-package lsp-java
-  :init
-  (add-hook 'java-mode-hook #'lsp))
-
 ;; ************************************************************
 ;; Which key
 ;; ************************************************************
@@ -206,19 +201,27 @@ This only works with orderless and for the first component of the search."
   :init (which-key-mode))
 
 ;; ************************************************************
+;; Java
+;; ************************************************************
+(use-package lsp-java
+  :init
+  (add-hook 'java-mode-hook #'lsp))
+
+;; ************************************************************
 ;; C 
 ;; ************************************************************
-(use-package irony
+(use-package ccls
   :init
-  (add-hook 'c-mode-hook 'irony-mode)
-  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+  (setq ccls-initialization-options
+        '(:index (:comments 2) :completion (:detailedLabel t)))
+  (add-hook 'c-mode-hook #'lsp))
 
 ;; ************************************************************
 ;; Hydra
 ;; ************************************************************
 (use-package hydra
   :init
-  (add-to-list 'load-path "~/build/rune/modules/")
+  (add-to-list 'load-path (concat user-emacs-directory "modules/"))
   :config
   (require 'windmove)
 
@@ -227,7 +230,7 @@ This only works with orderless and for the first component of the search."
     (interactive "p")
     (if (let ((windmove-wrap-around))
           (windmove-find-other-window 'right))
-	(shrink-window-horizontally arg)
+        (shrink-window-horizontally arg)
       (enlarge-window-horizontally arg)))
 
   (defun hydra-move-splitter-right (arg)
@@ -235,7 +238,7 @@ This only works with orderless and for the first component of the search."
     (interactive "p")
     (if (let ((windmove-wrap-around))
           (windmove-find-other-window 'right))
-	(enlarge-window-horizontally arg)
+        (enlarge-window-horizontally arg)
       (shrink-window-horizontally arg)))
 
   (defun hydra-move-splitter-up (arg)
@@ -243,7 +246,7 @@ This only works with orderless and for the first component of the search."
     (interactive "p")
     (if (let ((windmove-wrap-around))
           (windmove-find-other-window 'up))
-	(enlarge-window arg)
+        (enlarge-window arg)
       (shrink-window arg)))
 
   (defun hydra-move-splitter-down (arg)
@@ -251,7 +254,7 @@ This only works with orderless and for the first component of the search."
     (interactive "p")
     (if (let ((windmove-wrap-around))
           (windmove-find-other-window 'up))
-	(shrink-window arg)
+        (shrink-window arg)
       (enlarge-window arg)))
 
   (require 'rune-window-nav-hydra))
@@ -323,7 +326,7 @@ This only works with orderless and for the first component of the search."
   :config
   (global-evil-surround-mode 1)
   (add-hook 'emacs-lisp-mode-hook
-	    (lambda ()
+            (lambda ()
               (push '(?` . ("`" . "'")) evil-surround-pairs-alist))))
 
 (use-package evil-mc
@@ -474,7 +477,7 @@ This only works with orderless and for the first component of the search."
   :config
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t)
-  (setq custom-theme-directory "~/build/rune/themes/")
+  (setq custom-theme-directory (concat user-emacs-directory "themes/"))
   (load-theme 'doom-sandstorm t))
 
 ;; *************************************************************
@@ -509,7 +512,7 @@ This only works with orderless and for the first component of the search."
 (defun rune/edit-init ()
   "Edit the init.el file."
   (interactive)
-  (find-file "~/build/rune/init.el"))
+  (find-file (concat user-emacs-directory "init.el")))
 
 (defvar doom-escape-hook nil
   "A hook run when C-g is pressed (or ESC in normal mode, for evil users).
@@ -588,17 +591,17 @@ all hooks after it are ignored.")
   (setq-default indent-tabs-mode nil)
 
   (require 'recentf)
-  (setq recentf-save-file "~/build/rune/.recentf")
+  (setq recentf-save-file (concat user-emacs-directory ".recentf"))
   (setq recentf-max-saved-items 200)
   (setq recentf-max-menu-items 200)
   (recentf-mode 1)
   (run-at-time nil (* 5 60) 'recentf-save-list)
 
-  (setq custom-file "~/build/rune/custom.el")
+  (setq custom-file (concat user-emacs-directory "custom.el"))
 
-  (setq auth-sources "~/build/rune/.authinfo")
+  (setq auth-sources (concat user-emacs-directory ".authinfo"))
 
-  (setq tramp-auto-save-directory "~/build/rune/tramp-autosave")
+  (setq tramp-auto-save-directory (concat user-emacs-directory "tramp-autosave"))
   (setq backup-enable-predicate
         (lambda (name)
           (and (normal-backup-enable-predicate name)
