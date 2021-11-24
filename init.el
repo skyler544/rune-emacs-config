@@ -400,10 +400,11 @@ This only works with orderless and for the first component of the search."
 ;; Projectile
 ;; ************************************************************
 (use-package projectile
-  :config
-  (projectile-mode)
+  :init
   (setq projectile-cache-file (concat user-emacs-directory ".cache/projectile-cache"))
-  (setq projectile-known-projects-file (concat user-emacs-directory ".cache/projectile-projects")))
+  (setq projectile-known-projects-file (concat user-emacs-directory ".cache/projectile-bookmarks.eld"))
+  :config
+  (projectile-mode))
 
 
 ;; ************************************************************
