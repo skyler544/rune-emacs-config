@@ -571,7 +571,7 @@ all hooks after it are ignored.")
   (setq echo-keystrokes 0.01)
 
   (require 'recentf)
-  (setq recentf-save-file (concat user-emacs-directory ".cache/.recentf"))
+  (setq recentf-save-file (concat user-emacs-directory ".cache/recentf"))
   (setq recentf-max-saved-items 200)
   (setq recentf-max-menu-items 200)
   (recentf-mode 1)
