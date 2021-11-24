@@ -350,6 +350,7 @@ This only works with orderless and for the first component of the search."
   (rune/leader-keys
    "SPC" '(execute-extended-command :which-key "M-x")
    "."   '(find-file :which-key "find files in current dir")
+   ","   '(consult-buffer :which-key "switch buffer")
    "b"   '(:ignore t :which-key "buffer")
    "bb"  '(consult-buffer :which-key "switch buffer")
    "bi"  '(ibuffer :which-key "ibuffer")
@@ -466,7 +467,8 @@ This only works with orderless and for the first component of the search."
          ("C-'"   . popper-cycle)
          ("C-/" . popper-toggle-type))
   :init
-  (setq popper-mode-line nil)
+  (setq popper-window-height 15)
+; (setq popper-mode-line nil)
   (setq popper-reference-buffers
         '("\\*Messages\\*"
           "Output\\*$"
