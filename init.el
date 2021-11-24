@@ -12,10 +12,10 @@
 (package-initialize)
 
 (unless package-archive-contents
- (package-refresh-contents))
+  (package-refresh-contents))
 
 (unless (package-installed-p 'use-package)
-   (package-install 'use-package))
+  (package-install 'use-package))
 
 (eval-when-compile
   (require 'use-package))
@@ -31,26 +31,6 @@
   (setq wgrep-auto-save-buffer t))
 
 ;; ************************************************************
-;; Dogears
-;; ************************************************************
-(use-package dogears
-  :init
-  (dogears-mode)
-  :config
-  (require 'savehist)
-  (add-to-list 'savehist-additional-variables 'dogears-list))
-
-;; ************************************************************
-;; tree-sitter
-;; ************************************************************
-(use-package tree-sitter
-  :init
-  (global-tree-sitter-mode)
-  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
-
-(use-package tree-sitter-langs)
-
-;; ************************************************************
 ;; Vertico
 ;; ************************************************************
 (use-package vertico
@@ -58,8 +38,8 @@
   (setq file-name-shadow-properties '(invisible t intangible t))
   (file-name-shadow-mode +1)
   :bind (:map vertico-map
-              ("C-j" . vertico-next)
-              ("C-k" . vertico-previous))
+         ("C-j" . vertico-next)
+         ("C-k" . vertico-previous))
   :init
   (vertico-mode)
   (setq vertico-cycle t
@@ -68,9 +48,9 @@
 (use-package vertico-directory
   :load-path "extensions/"
   :bind (:map vertico-map
-              ("RET" . vertico-directory-enter)
-              ("DEL" . vertico-directory-delete-char)
-              ("M-DEL" . vertico-directory-delete-word)))
+         ("RET" . vertico-directory-enter)
+         ("DEL" . vertico-directory-delete-char)
+         ("M-DEL" . vertico-directory-delete-word)))
 
 (use-package savehist
   :init
@@ -88,7 +68,7 @@
 ;; ************************************************************
 (use-package marginalia
   :bind (:map vertico-map
-              ("M-A" . marginalia-cycle))
+         ("M-A" . marginalia-cycle))
   :init
   (marginalia-mode))
 
@@ -122,8 +102,6 @@
               :override #'consult-completing-read-multiple)
   (advice-add #'multi-occur :override #'consult-multi-occur)
 
-  (add-to-list 'consult-buffer-sources 'consult--source-dogears)
-
   (setq consult-narrow-key "<")
 
   (setq completion-in-region-function
@@ -133,7 +111,7 @@
                    #'completion--in-region)
                  args))))
 
-; enables swiper-isearch like behavior for consult-line
+;; enables swiper-isearch like behavior for consult-line
 (defun rune-consult-line-evil-history (&rest _)
   "Add latest `consult-line' search pattern to the evil search history ring.
 This only works with orderless and for the first component of the search."
@@ -147,24 +125,6 @@ This only works with orderless and for the first component of the search."
         (evil-ex-search-activate-highlight evil-ex-search-pattern)))))
 
 (advice-add #'consult-line :after #'rune-consult-line-evil-history)
-
-(defvar consult--source-dogears
-  (list :name     "Dogears"
-        :narrow   ?d
-        :category 'dogears
-        :hidden t
-        :items    (lambda ()
-                    (mapcar
-                     (lambda (place)
-                       (propertize (dogears--format-record place)
-                                   'consult--candidate place))
-                     dogears-list))
-        :action   (lambda (cand)
-                    (dogears-go (get-text-property 0 'consult--candidate cand)))))
-
-(defun consult-dogears ()
-  (interactive)
-  (consult--multi '(consult--source-dogears)))
 
 (use-package consult-dir
   :bind (("C-x C-d" . consult-dir)
@@ -221,13 +181,6 @@ This only works with orderless and for the first component of the search."
 ;; ************************************************************
 (use-package which-key
   :init (which-key-mode))
-
-;; ************************************************************
-;; Java
-;; ************************************************************
-(use-package lsp-java
-  :init
-  (add-hook 'java-mode-hook #'lsp))
 
 ;; ************************************************************
 ;; C 
@@ -310,7 +263,7 @@ This only works with orderless and for the first component of the search."
 ;; Evil
 ;; ************************************************************
 (use-package evil
-:init
+  :init
   (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
   (setq evil-want-Y-yank-to-eol t)
@@ -379,7 +332,7 @@ This only works with orderless and for the first component of the search."
   :after org
   :hook (org-mode . org-bullets-mode)
   :custom
-  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+  (org-bullets-bullet-list '("●")))
 
 (require 'org-indent)
 
@@ -404,7 +357,7 @@ This only works with orderless and for the first component of the search."
    "bs"  '(save-buffer :which-key "save-buffer")
    "bS"  '(write-file :which-key "write-file")
    "f"   '(:ignore t :which-key "files")
-   "e"   '(embark-act :which-key "embark-act")
+   "a"   '(embark-act :which-key "embark-act")
    "fp"  '(projectile-find-file :which-key "find file in project")
    "fr"  '(consult-recent-file :which-key "recently opened files")
    "fo"  '(rune/browse-org :which-key "browse org folder")
@@ -447,7 +400,11 @@ This only works with orderless and for the first component of the search."
 ;; Projectile
 ;; ************************************************************
 (use-package projectile
-  :config (projectile-mode))
+  :config
+  (projectile-mode)
+  (setq projectile-cache-file (concat user-emacs-directory ".cache/projectile-cache"))
+  (setq projectile-known-projects-file (concat user-emacs-directory ".cache/projectile-projects")))
+
 
 ;; ************************************************************
 ;; Smartparens
@@ -476,11 +433,9 @@ This only works with orderless and for the first component of the search."
   :init
   (add-hook 'dired-mode-hook #'dired-hide-details-mode)
   :config
-   (evil-collection-define-key 'normal 'dired-mode-map
+  (evil-collection-define-key 'normal 'dired-mode-map
     "h" 'dired-single-up-directory
     "l" 'dired-single-buffer))
-
-(use-package dired-single)
 
 (use-package all-the-icons-dired
   :hook (dired-mode . all-the-icons-dired-mode))
@@ -501,12 +456,6 @@ This only works with orderless and for the first component of the search."
         doom-themes-enable-italic t)
   (setq custom-theme-directory (concat user-emacs-directory "themes/"))
   (load-theme 'doom-sandstorm t))
-
-;; *************************************************************
-;; Splash screen
-;; *************************************************************
-(add-to-list 'load-path "~/build/emacs-splash")
-(require 'splash-screen)
 
 ;; *************************************************************
 ;; Popper
@@ -619,17 +568,17 @@ all hooks after it are ignored.")
   (setq echo-keystrokes 0.01)
 
   (require 'recentf)
-  (setq recentf-save-file (concat user-emacs-directory ".recentf"))
+  (setq recentf-save-file (concat user-emacs-directory ".cache/.recentf"))
   (setq recentf-max-saved-items 200)
   (setq recentf-max-menu-items 200)
   (recentf-mode 1)
   (run-at-time nil (* 5 60) 'recentf-save-list)
 
-  (setq custom-file (concat user-emacs-directory "custom.el"))
+  (setq custom-file "/dev/null")
 
   (setq auth-sources (concat user-emacs-directory ".authinfo"))
 
-  (setq tramp-auto-save-directory (concat user-emacs-directory "tramp-autosave"))
+  (setq tramp-auto-save-directory (concat user-emacs-directory ".cache/tramp-autosave"))
   (setq backup-enable-predicate
         (lambda (name)
           (and (normal-backup-enable-predicate name)
@@ -637,6 +586,10 @@ all hooks after it are ignored.")
                 (let ((method (file-remote-p name 'method)))
                   (when (stringp method)
                     (member method '("su" "sudo"))))))))
+
+  (setq eshell-history-file-name (concat user-emacs-directory ".cache/eshell-history"))
+  (setq savehist-file (concat user-emacs-directory ".cache/minibuffer-history"))
+  (setq transient-history-file (concat user-emacs-directory ".cache/transient-history"))
 
   (defun rune/popup-eshell ()
     (interactive)
@@ -658,5 +611,7 @@ all hooks after it are ignored.")
     (display-line-numbers-mode -1))
   (add-hook 'eshell-mode-hook 'rune/disable-linum-mode)
 
-  (require 'info-look)
-  (info-lookup-setup-mode 'symbol 'emacs-lisp-mode))
+  ;; (require 'info-look)
+  ;; (info-lookup-setup-mode 'symbol 'emacs-lisp-mode)
+
+  )
