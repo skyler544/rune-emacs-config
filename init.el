@@ -122,6 +122,10 @@
               :override #'consult-completing-read-multiple)
   (advice-add #'multi-occur :override #'consult-multi-occur)
 
+  (add-to-list 'consult-buffer-sources 'consult--source-dogears)
+
+  (setq consult-narrow-key "<")
+
   (setq completion-in-region-function
         (lambda (&rest args)
           (apply (if vertico-mode
@@ -143,6 +147,24 @@ This only works with orderless and for the first component of the search."
         (evil-ex-search-activate-highlight evil-ex-search-pattern)))))
 
 (advice-add #'consult-line :after #'rune-consult-line-evil-history)
+
+(defvar consult--source-dogears
+  (list :name     "Dogears"
+        :narrow   ?d
+        :category 'dogears
+        :hidden t
+        :items    (lambda ()
+                    (mapcar
+                     (lambda (place)
+                       (propertize (dogears--format-record place)
+                                   'consult--candidate place))
+                     dogears-list))
+        :action   (lambda (cand)
+                    (dogears-go (get-text-property 0 'consult--candidate cand)))))
+
+(defun consult-dogears ()
+  (interactive)
+  (consult--multi '(consult--source-dogears)))
 
 (use-package consult-dir
   :bind (("C-x C-d" . consult-dir)
@@ -568,6 +590,7 @@ all hooks after it are ignored.")
      1 nil (lambda () (setq gc-cons-threshold 16777216))))
   (add-hook 'minibuffer-setup-hook #'doom-defer-garbage-collection-h)
   (add-hook 'minibuffer-exit-hook #'doom-restore-garbage-collection-h)
+  (setq custom-theme-directory (concat user-emacs-directory "themes/"))
 
   (defun crm-indicator (args)
     (cons (concat "[CRM] " (car args)) (cdr args)))
@@ -583,12 +606,17 @@ all hooks after it are ignored.")
   (setq read-file-name-completion-ignore-case t
         read-buffer-completion-ignore-case t)
 
+  (setq completion-ignore-case t)
+
   (setq byte-compile-warnings nil)
+  (setq warning-suppress-log-types '((comp)))
+  (setq warning-suppress-types '((comp)))
   (setq enable-recursive-minibuffers t)
   (setq make-backup-files nil) ; this stops the annoying ~ files
   (setq truncate-lines t)
   (setq word-wrap nil)
   (setq-default indent-tabs-mode nil)
+  (setq echo-keystrokes 0.01)
 
   (require 'recentf)
   (setq recentf-save-file (concat user-emacs-directory ".recentf"))
