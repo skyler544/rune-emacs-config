@@ -15,9 +15,15 @@
 ;; *************************************************************
 ;; Smart Mode Line
 ;; *************************************************************
-(use-package smart-mode-line
-  :config
-  (sml/setup))
+;; (use-package smart-mode-line
+;;   :config
+;;   (sml/setup))
+
+;; *************************************************************
+;; Doom Mode Line
+;; *************************************************************
+(use-package doom-modeline
+  :config (doom-modeline-mode))
 
 ;; *************************************************************
 ;; iedit
@@ -422,6 +428,11 @@ Resize: _h_: left  _j_: down  _k_: up  _l_: right "
                          (message "Deleted %s." filename)
                          (kill-buffer)))
         (message "Failed."))))
+
+  (set-face-attribute 'variable-pitch nil :family "Iosevka Custom Extended")
+  (set-face-attribute 'mode-line nil :inherit 'default)
+  (set-face-attribute 'mode-line-active nil :inherit 'mode-line)
+  (set-face-attribute 'mode-line-inactive nil :inherit 'mode-line)
 
   ;; (defun disable-linum-mode ()
   ;;   (display-line-numbers-mode -1))
