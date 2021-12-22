@@ -8,9 +8,6 @@
 
 (setq ad-redefinition-action 'accept)
 
-(setq-default bidi-display-reordering 'left-to-right
-              bidi-paragraph-direction 'left-to-right)
-
 (setq-default cursor-in-non-selected-windows nil)
 (setq highlight-nonselected-windows nil)
 
@@ -34,12 +31,11 @@
 
 (setq default-frame-alist            ; font config
       (append (list
-               '(font . "Hack:style=Regular:size=16")
+               '(font . "Iosevka Custom Extended:size=16")
                '(height . 50)
                '(width . 81))))
 
 (column-number-mode)
-(global-display-line-numbers-mode t)
 (setq display-line-numbers-width-start t)
 (setq use-dialog-box nil)
 (add-hook 'prog-mode-hook (show-paren-mode))
@@ -47,3 +43,8 @@
 
 (setq inhibit-startup-screen t)
 (setq inhibit-startup-message t)
+
+;; *************************************************************
+;; Theme
+;; *************************************************************
+(load-theme 'modus-operandi)
