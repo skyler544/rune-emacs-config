@@ -27,7 +27,9 @@
 ;; UI Setup
 ;; ************************************************************
 (menu-bar-mode -1)
+(push '(menu-bar-lines . 0) default-frame-alist)
 (tool-bar-mode -1)
+(push '(tool-bar-lines . 0) default-frame-alist)
 (scroll-bar-mode -1)
 
 (setq default-frame-alist            ; font config
@@ -42,3 +44,6 @@
 (setq use-dialog-box nil)
 (add-hook 'prog-mode-hook (show-paren-mode))
 (setq frame-resize-pixelwise t)
+
+(setq inhibit-startup-screen t)
+(setq inhibit-startup-message t)

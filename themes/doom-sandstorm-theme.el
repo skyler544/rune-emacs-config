@@ -31,6 +31,7 @@
    (orange     '("#D39735" "#D39735" "brightred"    ))
    (green      '("#87875f" "#6D9158" "green"        ))
    (green-br   '("#6D9158"                          ))
+   (green3     '("#6D9158"                          ))
 ;  (green-br   '("#719611"                          ))
    (teal       '("#578F8F" "#8EBCBB" "brightgreen"  ))
    (dark-teal  '("#467373" "#8EBCBB" "brightgreen"  ))
@@ -189,6 +190,8 @@
    (corfu-border                      :background base0)
    (corfu-background                  :background base0)
    (corfu-current                     :background base0 :bold bold)
+
+   (markdown-code-face                :background nil                                        )
 
    ((paren-face-match &override)      :foreground fg                    :background fg-alt)
    ((paren-face-mismatch &override)   :foreground (doom-darken red 0.4) :background cyan))

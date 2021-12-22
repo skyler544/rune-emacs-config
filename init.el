@@ -4,10 +4,8 @@
 ;; *************************************************************
 (require 'package)
 
-(setq package-archives
-      '(("melpa"  . "https://melpa.org/packages/")
-        ("org"    . "https://orgmode.org/elpa/")
-        ("elpa"   . "https://elpa.gnu.org/packages/")))
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/") t)
 
 (package-initialize)
 
@@ -46,7 +44,9 @@
         vertico-count 15))
 
 (use-package vertico-directory
-  :load-path "extensions/"
+  :after vertico
+  :ensure nil
+  ;; :load-path "extensions/"
   :bind (:map vertico-map
          ("RET" . vertico-directory-enter)
          ("DEL" . vertico-directory-delete-char)
@@ -519,6 +519,11 @@ all hooks after it are ignored.")
     (evil-ex-nohighlight) t))
 
 (add-hook 'doom-escape-hook #'+evil-disable-ex-highlights-h)
+
+;; ************************************************************
+;; disk usage
+;; ************************************************************
+(use-package disk-usage)
 
 ;; ************************************************************
 ;; Keybindings
