@@ -15,15 +15,15 @@
 ;; *************************************************************
 ;; Smart Mode Line
 ;; *************************************************************
-;; (use-package smart-mode-line
-;;   :config
-;;   (sml/setup))
+(use-package smart-mode-line
+  :config
+  (sml/setup))
 
 ;; *************************************************************
 ;; Doom Mode Line
 ;; *************************************************************
-(use-package doom-modeline
-  :config (doom-modeline-mode))
+;; (use-package doom-modeline
+;;   :config (doom-modeline-mode))
 
 ;; *************************************************************
 ;; iedit
@@ -167,6 +167,7 @@ Resize: _h_: left  _j_: down  _k_: up  _l_: right "
   (setq file-name-shadow-properties '(invisible t intangible t))
   (file-name-shadow-mode +1)
   :bind (:map vertico-map
+         ("M-RET" . vertico-exit-input)
          ("C-j" . vertico-next)
          ("C-k" . vertico-previous))
   :init
@@ -418,6 +419,11 @@ Resize: _h_: left  _j_: down  _k_: up  _l_: right "
   (setq savehist-file (concat user-emacs-directory ".cache/minibuffer-history"))
   (setq transient-history-file (concat user-emacs-directory ".cache/transient-history"))
 
+  (defun display-emacs-init-time ()
+    "Displays the Emacs init time."
+    (interactive)
+    (message (emacs-init-time)))
+
   (defun delete-file-and-buffer ()
     "Kill the current buffer and delete the file it is visiting."
     (interactive)
@@ -432,12 +438,7 @@ Resize: _h_: left  _j_: down  _k_: up  _l_: right "
   (set-face-attribute 'variable-pitch nil :family "Iosevka Custom Extended")
   (set-face-attribute 'mode-line nil :inherit 'default)
   (set-face-attribute 'mode-line-active nil :inherit 'mode-line)
-  (set-face-attribute 'mode-line-inactive nil :inherit 'mode-line)
-
-  ;; (defun disable-linum-mode ()
-  ;;   (display-line-numbers-mode -1))
-  ;; (add-hook 'eshell-mode-hook 'disable-linum-mode))
-  )
+  (set-face-attribute 'mode-line-inactive nil :inherit 'mode-line))
 
 (provide 'init)
 ;;; init.el ends here

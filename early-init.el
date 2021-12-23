@@ -29,7 +29,7 @@
 (push '(tool-bar-lines . 0) default-frame-alist)
 (scroll-bar-mode -1)
 
-(setq default-frame-alist            ; font config
+(setq default-frame-alist 
       (append (list
                '(font . "Iosevka Custom Extended:size=16")
                '(height . 50)
