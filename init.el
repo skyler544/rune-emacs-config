@@ -5,9 +5,14 @@
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/") t)
+
 (package-initialize)
+
+(setq use-package-enable-imenu-support t)
+
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
+
 (eval-when-compile
   (require 'use-package))
 (setq use-package-always-ensure t)
@@ -20,15 +25,18 @@
   (sml/setup))
 
 ;; *************************************************************
-;; Doom Mode Line
+;; modus-themes
 ;; *************************************************************
-;; (use-package doom-modeline
-;;   :config (doom-modeline-mode))
+(use-package modus-themes
+  :init
+  (setq modus-themes-italic-constructs t))
 
 ;; *************************************************************
-;; iedit
+;; Company
 ;; *************************************************************
-(use-package iedit)
+(use-package company
+  :config
+  (global-company-mode 1))
 
 ;; ************************************************************
 ;; general
@@ -99,6 +107,29 @@
            :keymap evil-window-map
            :which-key "window")
    "ww" '(+hydra/window-nav/body :which-key "resize windows")))
+
+;; *************************************************************
+;; web-mode
+;; *************************************************************
+(defun add-company-to-web-mode ()
+  (add-to-list 'company-backends 'company-web-html 'append))
+
+(use-package web-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode) 'append)
+  (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode) 'append)
+  (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode) 'append)
+  (add-company-to-web-mode))
+
+(use-package emmet-mode
+  :hook (css-mode web-mode html-mode php-mode)
+  :config
+  (setq emmet-move-cursor-between-quotes t))
+
+;; *************************************************************
+;; iedit
+;; *************************************************************
+(use-package iedit)
 
 ;; ************************************************************
 ;; Hydra
@@ -257,13 +288,6 @@ Resize: _h_: left  _j_: down  _k_: up  _l_: right "
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
-;; *************************************************************
-;; Company
-;; *************************************************************
-(use-package company
-  :config
-  (global-company-mode 1))
-
 ;; ************************************************************
 ;; Which key
 ;; ************************************************************
@@ -380,6 +404,18 @@ Resize: _h_: left  _j_: down  _k_: up  _l_: right "
 ;; ************************************************************
 (use-package emacs
   :init
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              (setq gc-cons-threshold 16777216 ; 16mb
+                    gc-cons-percentage 0.1)))
+  (defun doom-defer-garbage-collection-h ()
+    (setq gc-cons-threshold most-positive-fixnum))
+  (defun doom-restore-garbage-collection-h ()
+    (run-at-time
+     1 nil (lambda () (setq gc-cons-threshold 16777216))))
+  (add-hook 'minibuffer-setup-hook #'doom-defer-garbage-collection-h)
+  (add-hook 'minibuffer-exit-hook #'doom-restore-garbage-collection-h)
+
   (setq read-file-name-completion-ignore-case t
         read-buffer-completion-ignore-case t)
 
@@ -435,7 +471,11 @@ Resize: _h_: left  _j_: down  _k_: up  _l_: right "
                          (kill-buffer)))
         (message "Failed."))))
 
-  (set-face-attribute 'variable-pitch nil :family "Iosevka Custom Extended")
+  (setq blink-cursor-mode nil)
+
+  (set-face-attribute 'variable-pitch nil
+                      :family "Iosevka Custom Extended"
+                      :slant 'oblique)
   (set-face-attribute 'mode-line nil :inherit 'default)
   (set-face-attribute 'mode-line-active nil :inherit 'mode-line)
   (set-face-attribute 'mode-line-inactive nil :inherit 'mode-line))
