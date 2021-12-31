@@ -25,6 +25,13 @@
   (sml/setup))
 
 ;; *************************************************************
+;; Doom Mode Line
+;; *************************************************************
+;; (use-package doom-modeline
+;;   :init
+;;   (doom-modeline-mode 1))
+
+;; *************************************************************
 ;; modus-themes
 ;; *************************************************************
 (use-package modus-themes
@@ -49,6 +56,7 @@
   (general-define-key
    :states '(normal visual)
     "/" 'isearch-forward
+    "," 'consult-line
     "?" 'iedit-mode
     "C-w" 'evil-scroll-line-up)
   (general-define-key
@@ -383,16 +391,36 @@ Resize: _h_: left  _j_: down  _k_: up  _l_: right "
 (use-package dired
   :ensure nil
   :commands (dired dired-jump)
-  :bind (("C-x C-j" . dired-jump))
-  :init
-  (add-hook 'dired-mode-hook #'dired-hide-details-mode)
+  ;; :bind (("C-x C-j" . dired-jump))
+  ;; :init
+  ;; (add-hook 'dired-mode-hook #'dired-hide-details-mode)
   :config
   (evil-collection-define-key 'normal 'dired-mode-map
     "h" 'dired-single-up-directory
     "l" 'dired-single-buffer))
 
-(use-package all-the-icons-dired
-  :hook (dired-mode . all-the-icons-dired-mode))
+;; (use-package all-the-icons-dired
+;;   :hook (dired-mode . all-the-icons-dired-mode))
+
+(use-package dirvish
+  :init
+  ;; (dirvish-override-dired-jump)
+  (add-hook 'dired-after-readin-hook
+            (lambda () (unless (dirvish-live-p)
+                         (dirvish-dired))))
+  :config
+  ;; (general-define-key
+  ;;  :states '(normal visual)
+  ;;  "C-x C-j" 'dirvish-jump)
+  (general-define-key
+   :keymaps 'dired-mode-map
+   :states 'normal 
+    "DEL" 'dired-up-directory)
+  (general-define-key
+   :keymaps 'dirvish-mode-map
+   :states 'normal 
+    "DEL" 'dirvish-up-directory))
+
 
 ;; *************************************************************
 ;; snow
