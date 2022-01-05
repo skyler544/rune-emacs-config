@@ -31,6 +31,11 @@
 
 (setq default-frame-alist 
       (append (list
+               ;; '(font . "Liberation Mono")
+               ;; '(font . "FiraCode Nerd Font Mono")
+               ;; '(font . "Hack")
+               ;; '(font . "Roboto Mono")
+               ;; '(font . "IBM Plex Mono")
                '(font . "Iosevka Custom Extended:size=16")
                '(height . 50)
                '(width . 81))))
