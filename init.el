@@ -21,15 +21,67 @@
 ;; Smart Mode Line
 ;; *************************************************************
 (use-package smart-mode-line
+  :init
+  (setq sml/theme 'respectful)
   :config
   (sml/setup))
 
 ;; *************************************************************
-;; Moodline
+;; pdf-tools
 ;; *************************************************************
-;; (use-package mood-line
+(use-package pdf-tools)
+(add-to-list 'load-path "~/build/pdf-continuous-scroll-mode.el/")
+(require 'pdf-continuous-scroll-mode)
+
+;; *************************************************************
+;; flycheck
+;; *************************************************************
+(use-package flycheck)
+
+;; *************************************************************
+;; kaolin-themes
+;; *************************************************************
+;; (use-package kaolin-themes
 ;;   :config
-;;   (mood-line-mode))
+;;   (load-theme 'kaolin-light t nil))
+
+;; *************************************************************
+;; tao-themes
+;; *************************************************************
+;; (use-package tao-theme
+;;   :config
+;;   (setq tao-theme-use-sepia nil)
+;;   (load-theme 'tao-yang t nil)
+;;   (set-face-attribute 'fringe nil :inherit 'default
+;;                       :background "#f1f1f1"))
+
+;; *************************************************************
+;; org-superstar
+;; *************************************************************
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :config
+  (setq org-bullets-bullet-list '("●")
+        org-hide-leading-stars t))
+
+;; *************************************************************
+;; lsp
+;; *************************************************************
+(use-package lsp-mode
+  :config
+  (setq lsp-headerline-breadcrumb-enable nil))
+(use-package lsp-ui)
+
+;; *************************************************************
+;; ccls
+;; *************************************************************
+(use-package ccls)
+
+;; *************************************************************
+;; ccls
+;; *************************************************************
+(use-package cc-mode)
 
 ;; *************************************************************
 ;; Doom Mode Line
@@ -44,6 +96,14 @@
 (use-package modus-themes
   :init
   (setq modus-themes-italic-constructs t))
+
+;; *************************************************************
+;; solo-jazz
+;; *************************************************************
+;; (use-package solo-jazz-theme
+;;   :ensure t
+;;   :config
+;;   (load-theme 'solo-jazz t))
 
 ;; *************************************************************
 ;; Company
@@ -62,15 +122,15 @@
 
   (general-define-key
    :states '(normal visual)
-    "/" 'isearch-forward
-    "," 'consult-line
-    "?" 'iedit-mode
-    "C-w" 'evil-scroll-line-up)
+   "/" 'isearch-forward
+   "," 'consult-line
+   "?" 'iedit-mode
+   "C-w" 'evil-scroll-line-up)
   (general-define-key
    :states 'normal
-    "P" 'consult-yank-from-kill-ring
-    "n" 'isearch-repeat-forward
-    "N" 'isearch-repeat-backward)
+   "P" 'consult-yank-from-kill-ring
+   "n" 'isearch-repeat-forward
+   "N" 'isearch-repeat-backward)
 
   (general-create-definer leader-keys
     :keymaps '(normal insert visual emacs)
@@ -105,6 +165,7 @@
    "hv"  '(helpful-variable :which-key "describe variable")
    "hk"  '(helpful-key :which-key "describe key")
    "hF"  '(describe-face :which-key "describe face")
+   "h'"  '(describe-char :which-key "describe char")
 
    "q"   '(:ignore t :which-key "quit")
    "qK"  '(save-buffers-kill-emacs :which-key "save and quit")
@@ -187,7 +248,7 @@
         (shrink-window arg)
       (enlarge-window arg)))
 
-  
+
   (defhydra +hydra/window-nav (:hint nil)
     "
 Resize: _h_: left  _j_: down  _k_: up  _l_: right "
@@ -402,31 +463,33 @@ Resize: _h_: left  _j_: down  _k_: up  _l_: right "
   ;; :init
   ;; (add-hook 'dired-mode-hook #'dired-hide-details-mode)
   :config
-  (evil-collection-define-key 'normal 'dired-mode-map
-    "h" 'dired-single-up-directory
-    "l" 'dired-single-buffer))
-
+  ;; (evil-collection-define-key 'normal 'dired-mode-map
+  ;;  "h" 'dired-single-up-directory
+  ;;  "l" 'dired-single-buffer))
+)
+  
+  
 ;; (use-package all-the-icons-dired
 ;;   :hook (dired-mode . all-the-icons-dired-mode))
 
-(use-package dirvish
-  :init
-  ;; (dirvish-override-dired-jump)
-  (add-hook 'dired-after-readin-hook
-            (lambda () (unless (dirvish-live-p)
-                         (dirvish-dired))))
-  :config
-  ;; (general-define-key
-  ;;  :states '(normal visual)
-  ;;  "C-x C-j" 'dirvish-jump)
-  (general-define-key
-   :keymaps 'dired-mode-map
-   :states 'normal 
-    "DEL" 'dired-up-directory)
-  (general-define-key
-   :keymaps 'dirvish-mode-map
-   :states 'normal 
-    "DEL" 'dirvish-up-directory))
+;; (use-package dirvish
+;;   :init
+;;   ;; (dirvish-override-dired-jump)
+;;   (add-hook 'dired-after-readin-hook
+;;             (lambda () (unless (dirvish-live-p)
+;;                          (dirvish-dired))))
+;;   :config
+;;   ;; (general-define-key
+;;   ;;  :states '(normal visual)
+;;   ;;  "C-x C-j" 'dirvish-jump)
+;;   (general-define-key
+;;    :keymaps 'dired-mode-map
+;;    :states 'normal
+;;     "DEL" 'dired-up-directory)
+;;   (general-define-key
+;;    :keymaps 'dirvish-mode-map
+;;    :states 'normal
+;;     "DEL" 'dirvish-up-directory))
 
 
 ;; *************************************************************
@@ -516,9 +579,10 @@ Resize: _h_: left  _j_: down  _k_: up  _l_: right "
   (set-face-attribute 'variable-pitch nil
                       :family "Iosevka Custom Extended"
                       :slant 'oblique)
-  (set-face-attribute 'mode-line nil :inherit 'default)
-  (set-face-attribute 'mode-line-active nil :inherit 'mode-line)
-  (set-face-attribute 'mode-line-inactive nil :inherit 'mode-line))
+  ;; (set-face-attribute 'mode-line nil :inherit 'default)
+  ;; (set-face-attribute 'mode-line nil :inherit 'mode-line-inactive)
+  ;; (set-face-attribute 'mode-line-inactive nil :inherit 'mode-line)
+  )
 
 (provide 'init)
 ;;; init.el ends here

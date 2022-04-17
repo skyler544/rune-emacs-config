@@ -48,8 +48,11 @@
 
 (setq inhibit-startup-screen t)
 (setq inhibit-startup-message t)
+(setq custom-safe-themes t)
+(setq custom-theme-directory "~/build/smooth-white-theme/")
 
 ;; *************************************************************
 ;; Theme
 ;; *************************************************************
 (load-theme 'modus-operandi)
+;; (load-theme 'smooth-white)
