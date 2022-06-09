@@ -20,23 +20,28 @@
 ;; *************************************************************
 ;; Smart Mode Line
 ;; *************************************************************
-(use-package smart-mode-line
-  :init
-  (setq sml/theme 'respectful)
-  :config
-  (sml/setup))
+;; (use-package smart-mode-line
+;;   :init
+;;   (setq sml/theme 'respectful)
+;;   :config
+;;   (sml/setup))
 
 ;; *************************************************************
 ;; pdf-tools
 ;; *************************************************************
-(use-package pdf-tools)
-(add-to-list 'load-path "~/build/pdf-continuous-scroll-mode.el/")
-(require 'pdf-continuous-scroll-mode)
+;; (use-package pdf-tools)
+;; (add-to-list 'load-path "~/build/pdf-continuous-scroll-mode.el/")
+;; (require 'pdf-continuous-scroll-mode)
 
 ;; *************************************************************
 ;; flycheck
 ;; *************************************************************
 (use-package flycheck)
+
+;; *************************************************************
+;; bison
+;; *************************************************************
+;; (use-package bison-mode)
 
 ;; *************************************************************
 ;; kaolin-themes
@@ -76,10 +81,10 @@
 ;; *************************************************************
 ;; ccls
 ;; *************************************************************
-(use-package ccls)
+;; (use-package ccls)
 
 ;; *************************************************************
-;; ccls
+;; cpp
 ;; *************************************************************
 (use-package cc-mode)
 
@@ -87,8 +92,19 @@
 ;; Doom Mode Line
 ;; *************************************************************
 ;; (use-package doom-modeline
+;;   :config
+;;   (setq doom-modeline-support-imenu t)
+;;   (setq doom-modeline-major-mode-icon nil)
 ;;   :init
 ;;   (doom-modeline-mode 1))
+
+;; *************************************************************
+;; Doom Themes
+;; *************************************************************
+;; (use-package doom-themes
+;;   :config
+;;   (load-theme 'doom-nord-light)
+;;   (doom-themes-org-config))
 
 ;; *************************************************************
 ;; modus-themes
@@ -187,20 +203,21 @@
 ;; *************************************************************
 ;; web-mode
 ;; *************************************************************
-(defun add-company-to-web-mode ()
-  (add-to-list 'company-backends 'company-web-html 'append))
+;; (defun add-company-to-web-mode ()
+;;   (add-to-list 'company-backends 'company-web-html 'append))
 
-(use-package web-mode
-  :config
-  (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode) 'append)
-  (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode) 'append)
-  (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode) 'append)
-  (add-company-to-web-mode))
+;; (use-package web-mode
+;;   :config
+;;   (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode) 'append)
+;;   (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode) 'append)
+;;   (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode) 'append)
+;;   ;; (add-company-to-web-mode)
+;;   )
 
-(use-package emmet-mode
-  :hook (css-mode web-mode html-mode php-mode)
-  :config
-  (setq emmet-move-cursor-between-quotes t))
+;; (use-package emmet-mode
+;;   :hook (css-mode web-mode html-mode php-mode)
+;;   :config
+;;   (setq emmet-move-cursor-between-quotes t))
 
 ;; *************************************************************
 ;; iedit
@@ -472,24 +489,26 @@ Resize: _h_: left  _j_: down  _k_: up  _l_: right "
 ;; (use-package all-the-icons-dired
 ;;   :hook (dired-mode . all-the-icons-dired-mode))
 
-;; (use-package dirvish
-;;   :init
-;;   ;; (dirvish-override-dired-jump)
-;;   (add-hook 'dired-after-readin-hook
-;;             (lambda () (unless (dirvish-live-p)
-;;                          (dirvish-dired))))
-;;   :config
-;;   ;; (general-define-key
-;;   ;;  :states '(normal visual)
-;;   ;;  "C-x C-j" 'dirvish-jump)
-;;   (general-define-key
-;;    :keymaps 'dired-mode-map
-;;    :states 'normal
-;;     "DEL" 'dired-up-directory)
-;;   (general-define-key
-;;    :keymaps 'dirvish-mode-map
-;;    :states 'normal
-;;     "DEL" 'dirvish-up-directory))
+;; *************************************************************
+;; EIN
+;; *************************************************************
+(use-package ein
+  :general
+  (:states 'motion
+           :keymaps 'ein:notebook-mode-map
+           "RET" 'ein:worksheet-execute-cell-and-goto-next
+           "C-RET" 'ein:worksheet-execute-cell
+           "C-S-RET" 'ein:worksheet-execute-all-cells
+           "C-j" 'ein:worksheet-move-cell-down
+           "C-k" 'ein:worksheet-move-cell-up
+           "o" 'ein:worksheet-insert-cell-below
+           "O" 'ein:worksheet-insert-cell-above
+           "t" 'ein:worksheet-toggle-cell-type
+           "dd" 'ein:worksheet-kill-cell
+           "yy" 'ein:worksheet-copy-cell
+           "p" 'ein:worksheet-yank-cell
+           "C-d" 'ein:notebook-kernel-interrupt-command
+           "l" 'ein:worksheet-clear-output))
 
 
 ;; *************************************************************
@@ -507,20 +526,20 @@ Resize: _h_: left  _j_: down  _k_: up  _l_: right "
 ;; ************************************************************
 (use-package emacs
   :init
-  (add-hook 'emacs-startup-hook
-            (lambda ()
-              (setq gc-cons-threshold 16777216 ; 16mb
-                    gc-cons-percentage 0.1)))
-  (defun doom-defer-garbage-collection-h ()
-    (setq gc-cons-threshold most-positive-fixnum))
-  (defun doom-restore-garbage-collection-h ()
-    (run-at-time
-     1 nil (lambda () (setq gc-cons-threshold 16777216))))
-  (add-hook 'minibuffer-setup-hook #'doom-defer-garbage-collection-h)
-  (add-hook 'minibuffer-exit-hook #'doom-restore-garbage-collection-h)
+  ;; (add-hook 'emacs-startup-hook
+  ;;           (lambda ()
+  ;;             (setq gc-cons-threshold 16777216 ; 16mb
+  ;;                   gc-cons-percentage 0.1)))
+  ;; (defun doom-defer-garbage-collection-h ()
+  ;;   (setq gc-cons-threshold most-positive-fixnum))
+  ;; (defun doom-restore-garbage-collection-h ()
+  ;;   (run-at-time
+  ;;    1 nil (lambda () (setq gc-cons-threshold 16777216))))
+  ;; (add-hook 'minibuffer-setup-hook #'doom-defer-garbage-collection-h)
+  ;; (add-hook 'minibuffer-exit-hook #'doom-restore-garbage-collection-h)
 
-  (setq read-file-name-completion-ignore-case t
-        read-buffer-completion-ignore-case t)
+  ;; (setq read-file-name-completion-ignore-case t
+  ;;       read-buffer-completion-ignore-case t)
 
   (setq completion-ignore-case t)
 

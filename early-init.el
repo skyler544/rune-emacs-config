@@ -1,8 +1,8 @@
 ;; ************************************************************
 ;; Doom Performance Options
 ;; ************************************************************
-(setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
-      gc-cons-percentage 0.6)
+;; (setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
+;;       gc-cons-percentage 0.6)
 
 (setq load-prefer-newer noninteractive)
 
@@ -49,10 +49,10 @@
 (setq inhibit-startup-screen t)
 (setq inhibit-startup-message t)
 (setq custom-safe-themes t)
-(setq custom-theme-directory "~/build/smooth-white-theme/")
+;; (setq custom-theme-directory "~/build/rune/themes/")
 
 ;; *************************************************************
 ;; Theme
 ;; *************************************************************
 (load-theme 'modus-operandi)
-;; (load-theme 'smooth-white)
+;; (load-theme 'mindre)
