@@ -31,14 +31,8 @@
 
 (setq default-frame-alist 
       (append (list
-               ;; '(font . "Liberation Mono")
-               ;; '(font . "FiraCode Nerd Font Mono")
-               ;; '(font . "Hack")
-               ;; '(font . "Roboto Mono")
-               ;; '(font . "IBM Plex Mono")
                '(font . "Iosevka Custom Extended:size=16")
-               '(height . 50)
-               '(width . 81))))
+               '(height . 50) '(width . 81))))
 
 (column-number-mode)
 (setq display-line-numbers-width-start t)
@@ -49,10 +43,8 @@
 (setq inhibit-startup-screen t)
 (setq inhibit-startup-message t)
 (setq custom-safe-themes t)
-;; (setq custom-theme-directory "~/build/rune/themes/")
 
 ;; *************************************************************
 ;; Theme
 ;; *************************************************************
 (load-theme 'modus-operandi)
-;; (load-theme 'mindre)
