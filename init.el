@@ -26,6 +26,8 @@
   :config
   (sml/setup))
 
+(use-package diminish)
+
 ;; *************************************************************
 ;; pdf-tools
 ;; *************************************************************
@@ -100,8 +102,12 @@
 ;; Company
 ;; *************************************************************
 (use-package company
+  :diminish
   :config
   (global-company-mode 1))
+
+(use-package eldoc
+  :diminish)
 
 ;; ************************************************************
 ;; general
@@ -360,6 +366,7 @@ Resize: _h_: left  _j_: down  _k_: up  _l_: right "
 ;; Which key
 ;; ************************************************************
 (use-package which-key
+  :diminish
   :init (which-key-mode))
 
 ;; ************************************************************
@@ -422,6 +429,7 @@ Resize: _h_: left  _j_: down  _k_: up  _l_: right "
 ;; Projectile
 ;; ************************************************************
 (use-package projectile
+  :diminish
   :init
   (setq projectile-cache-file (concat user-emacs-directory ".cache/projectile-cache"))
   (setq projectile-known-projects-file (concat user-emacs-directory ".cache/projectile-bookmarks.eld"))
