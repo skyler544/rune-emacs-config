@@ -20,13 +20,36 @@
 ;; *************************************************************
 ;; Smart Mode Line
 ;; *************************************************************
-(use-package smart-mode-line
-  :init
-  (setq sml/theme 'respectful)
-  :config
-  (sml/setup))
+;; (use-package smart-mode-line
+;;   :init
+;;   (setq sml/theme 'respectful)
+;;   :config
+;;   (sml/setup))
 
+;; *************************************************************
+;; Diminish
+;; *************************************************************
 (use-package diminish)
+
+;; *************************************************************
+;; avy
+;; *************************************************************
+(use-package avy
+  :bind (("M-j" . avy-goto-char-timer))
+  :config
+  (setq avy-all-windows t)
+
+  (defun avy-action-embark (pt)
+  (unwind-protect
+      (save-excursion
+        (goto-char pt)
+        (embark-act))
+    (select-window
+     (cdr (ring-ref avy-ring 0))))
+  t)
+
+  (setf (alist-get ?. avy-dispatch-alist) 'avy-action-embark)
+)
 
 ;; *************************************************************
 ;; pdf-tools
@@ -313,6 +336,7 @@ Resize: _h_: left  _j_: down  _k_: up  _l_: right "
 ;; Consult
 ;; ************************************************************
 (use-package consult
+  :bind (("C-x b" . consult-buffer))
   :config
   (consult-customize consult-buffer :preview-key (kbd "M-/"))
 
@@ -340,7 +364,8 @@ Resize: _h_: left  _j_: down  _k_: up  _l_: right "
 ;; ************************************************************
 (use-package embark
   :bind
-  (("C-;" . embark-act)
+  (("C-," . embark-act)
+   ("C-x C-," . embark-act)
    ("C-h B" . embark-bindings))
 
   :config
@@ -547,7 +572,21 @@ Resize: _h_: left  _j_: down  _k_: up  _l_: right "
 
   (set-face-attribute 'variable-pitch nil
                       :family "Iosevka Custom Extended"
-                      :slant 'oblique))
+                      :slant 'oblique)
+
+  ;; newline-without-break-of-line
+  (defun newline-without-break-of-line ()
+    "1. move to end of the line.
+     2. insert newline with index"
+
+    (interactive)
+    (let ((oldpos (point)))
+      (end-of-line)
+      (newline-and-indent)))
+
+  (global-set-key (kbd "<C-return>") 'newline-without-break-of-line)
+
+  )
 
 (provide 'init)
 ;;; init.el ends here
