@@ -21,7 +21,7 @@
 (setq initial-major-mode 'fundamental-mode)
 
 ;; ************************************************************
-;; UI Setup
+;; UI Config
 ;; ************************************************************
 (menu-bar-mode -1)
 (push '(menu-bar-lines . 0) default-frame-alist)
@@ -29,10 +29,14 @@
 (push '(tool-bar-lines . 0) default-frame-alist)
 (scroll-bar-mode -1)
 
-(setq default-frame-alist 
+(setq default-frame-alist
       (append (list
                '(font . "Iosevka Custom Extended:size=16")
                '(height . 50) '(width . 81))))
+
+(set-face-attribute 'variable-pitch nil
+                    :family "Iosevka Custom Extended"
+                    :slant 'oblique)
 
 (column-number-mode)
 (setq display-line-numbers-width-start t)
