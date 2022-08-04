@@ -1,6 +1,12 @@
-;; -*- lexical-binding: t -*-
+;;; org-config.el --- Description -*- lexical-binding: t; -*-
+;;
+;; This file is not part of GNU Emacs.
+;;
+;;; Commentary:
+;;; Code:
+
 ;; *************************************************************
-;; org-superstar
+;;; org-superstar
 ;; *************************************************************
 (use-package org-bullets
   :after org
@@ -12,3 +18,4 @@
 ;; *************************************************************
 ;; *************************************************************
 (provide 'org-config)
+;;; org-config.el ends here

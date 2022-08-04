@@ -1,10 +1,17 @@
-;; -*- lexical-binding: t -*-
+;;; init.el --- Description -*- lexical-binding: t; -*-
+;;
+;; This file is not part of GNU Emacs.
+;;
+;;; Commentary:
+;;; Code:
+
 ;; *************************************************************
-;; Initialize package sources
+;;; Initialize package sources
 ;; *************************************************************
 (require 'package)
 (add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/") t)
+             '("melpa" . "https://melpa.org/packages/")
+             '("org" . "https://orgmode.org/elpa/"))
 
 (package-initialize)
 
@@ -18,7 +25,7 @@
 (setq use-package-always-ensure t)
 
 ;; ************************************************************
-;; Miscellaneous
+;;; Load Configuration
 ;; ************************************************************
 (use-package emacs
   :init
@@ -27,16 +34,3 @@
 
 (provide 'init)
 ;;; init.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(dired which-key wgrep vertico use-package smartparens smart-mode-line rainbow-delimiters projectile org-bullets orderless modus-themes marginalia magit lsp-ui iedit hydra helpful general format-all flycheck evil-surround evil-mc evil-collection embark-consult diminish consult-dir company avy)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )

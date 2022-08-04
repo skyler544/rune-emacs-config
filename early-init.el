@@ -1,5 +1,12 @@
+;;; early-init.el --- Description -*- lexical-binding: t; -*-
+;;
+;; This file is not part of GNU Emacs.
+;;
+;;; Commentary:
+;;; Code:
+
 ;; ************************************************************
-;; Doom Performance Options
+;;; Doom Performance Options
 ;; ************************************************************
 ;; (setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
 ;;       gc-cons-percentage 0.6)
@@ -21,7 +28,7 @@
 (setq initial-major-mode 'fundamental-mode)
 
 ;; ************************************************************
-;; UI Config
+;;; UI Config
 ;; ************************************************************
 (menu-bar-mode -1)
 (push '(menu-bar-lines . 0) default-frame-alist)
@@ -48,7 +55,14 @@
 (setq inhibit-startup-message t)
 (setq custom-safe-themes t)
 
+(setq scroll-margin 0
+      scroll-conservatively 101
+      scroll-preserve-screen-position t
+      auto-window-vscroll nil)
+
+
 ;; *************************************************************
-;; Theme
+;;; Theme
 ;; *************************************************************
 (load-theme 'modus-operandi)
+;;; early-init.el ends here

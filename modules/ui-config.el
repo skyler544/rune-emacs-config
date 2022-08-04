@@ -1,6 +1,12 @@
-;; -*- lexical-binding: t -*-
+;;; ui-config.el --- Description -*- lexical-binding: t; -*-
+;;
+;; This file is not part of GNU Emacs.
+;;
+;;; Commentary:
+;;; Code:
+
 ;; *************************************************************
-;; Doom Mode Line
+;;; Doom Mode Line
 ;; *************************************************************
 ;; (use-package doom-modeline
 ;;   :config
@@ -10,33 +16,46 @@
 ;;   (doom-modeline-mode 1))
 
 ;; *************************************************************
-;; Doom Themes
+;;; Doom Themes
 ;; *************************************************************
 ;; (use-package doom-themes
 ;;   :config
-;;   (load-theme 'doom-nord-light)
+;;   (load-theme 'doom-zenburn)
 ;;   (doom-themes-org-config))
 
 ;; *************************************************************
-;; Diminish
+;;; Diminish
 ;; *************************************************************
 (use-package diminish)
 
 ;; *************************************************************
-;; modus-themes
+;;; Dired
+;; *************************************************************
+(use-package all-the-icons-dired
+  :hook (dired-mode . all-the-icons-dired-mode))
+
+(defun sky/dired-activate-hide-details-mode ()
+    (dired-hide-details-mode 1))
+
+(use-package dired
+  :ensure nil
+  :hook (dired-mode . sky/dired-activate-hide-details-mode))
+
+;; *************************************************************
+;;; modus-themes
 ;; *************************************************************
 (use-package modus-themes
   :init
   (setq modus-themes-italic-constructs t))
 
 ;; ************************************************************
-;; Rainbow Delimiters
+;;; Rainbow Delimiters
 ;; ************************************************************
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
 ;; *************************************************************
-;; Smart Mode Line
+;;; Smart Mode Line
 ;; *************************************************************
 ;; (use-package smart-mode-line
 ;;   :init
@@ -45,7 +64,7 @@
 ;;   (sml/setup))
 
 ;; ************************************************************
-;; Which key
+;;; Which key
 ;; ************************************************************
 (use-package which-key
   :diminish
@@ -54,3 +73,4 @@
 ;; ************************************************************
 ;; ************************************************************
 (provide 'ui-config)
+;;; ui-config.el ends here

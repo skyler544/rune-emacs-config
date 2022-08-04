@@ -1,5 +1,13 @@
-;; -*- lexical-binding: t -*-
+;;; functions.el --- Description -*- lexical-binding: t; -*-
+;;
+;; This file is not part of GNU Emacs.
+;;
+;;; Commentary:
+;;; Code:
 
+;; ************************************************************
+;;; Emacs
+;; ************************************************************
 (use-package emacs
   :init
   (defun display-emacs-init-time ()
@@ -27,6 +35,20 @@
     (let ((oldpos (point)))
       (end-of-line)
       (newline-and-indent)))
+
+  (defun projectile-emacs-directory ()
+    "View the emacs user directory with projectile."
+    (interactive)
+    (projectile-find-file-in-directory user-emacs-directory))
+  
+  (defun jump-to-init-file ()
+    "Jump to the emacs user directory with dired."
+    (interactive)
+    (find-file (concat user-emacs-directory "/init.el")))
+
   )
 
+;; ************************************************************
+;; ************************************************************
 (provide 'functions)
+;;; functions.el ends here

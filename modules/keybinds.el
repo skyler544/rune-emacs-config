@@ -1,6 +1,13 @@
-;; -*- lexical-binding: t -*-
+;;; keybinds.el --- Description -*- lexical-binding: t; -*-
+;;
+;;
+;; This file is not part of GNU Emacs.
+;;
+;;; Commentary:
+;;; Code:
+
 ;; *************************************************************
-;; Evil
+;;; Evil
 ;; *************************************************************
 (use-package evil
   :init
@@ -41,7 +48,7 @@
          ("C-k" . evil-mc-make-cursor-move-prev-line)))
 
 ;; *************************************************************
-;; General
+;;; General
 ;; *************************************************************
 (use-package general
   :after evil
@@ -103,6 +110,8 @@
    "hF"  '(describe-face :which-key "describe face")
    "h'"  '(describe-char :which-key "describe char")
 
+   "pf" '(projectile-emacs-directory :which-key "jump to config directory")
+
    "q"   '(:ignore t :which-key "quit")
    "qK"  '(save-buffers-kill-emacs :which-key "save and quit")
    "qq"  '(save-buffers-kill-terminal :which-key "save and quit")
@@ -113,7 +122,7 @@
    "sb"  '(consult-line :which-key "consult-line")
    "sf"  '(consult-locate :which-key "locate")
 
-   "t"   '(rune/popup-eshell :which-key "eshell")
+   "t"   '(eshell :which-key "eshell")
 
    "w"   '(:package evil
            :keymap evil-window-map
@@ -121,10 +130,10 @@
    "ww" '(+hydra/window-nav/body :which-key "resize windows")))
 
 ;; *************************************************************
-;; Misc
+;;; Misc
 ;; *************************************************************
-;;(global-set-key (kbd "<C-return>") 'newline-without-break-of-line)
 
 ;; *************************************************************
 ;; *************************************************************
 (provide 'keybinds)
+;;; keybinds.el ends here

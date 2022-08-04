@@ -1,6 +1,12 @@
-;; -*- lexical-binding: t -*-
+;;; utilities.el --- Description -*- lexical-binding: t; -*-
+;;
+;; This file is not part of GNU Emacs.
+;;
+;;; Commentary:
+;;; Code:
+
 ;; ************************************************************
-;; Avy
+;;; Avy
 ;; ************************************************************
 (use-package avy
   :config
@@ -17,39 +23,68 @@
 
   (setf (alist-get ?. avy-dispatch-alist) 'avy-action-embark))
 
-;; *************************************************************
-;; Company
-;; *************************************************************
-(use-package company
-  :diminish
-  :config
-  (global-company-mode 1))
+;; ************************************************************
+;;; Completion
+;; ************************************************************
+(use-package corfu
+  :custom
+  (corfu-auto t)
+  (corfu-quit-no-match 'separator)
+  :init
+  (global-corfu-mode)
 
-;; *************************************************************
-;; Eldoc
-;; *************************************************************
-;; (use-package eldoc
-;;   :diminish
-;;   :config
-;;   (setq global-eldoc-mode t))
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (setq-local corfu-auto nil)
+              (corfu-mode)))
+  )
+
+(use-package corfu-doc
+  :bind (:map corfu-map
+              ("M-p" . corfu-doc-scroll-down)
+              ("M-n" . corfu-doc-scroll-up)
+              ("M-d" . corfu-doc-toggle)
+              )
+  :hook
+  (corfu-mode-hook . corfu-doc-mode)
+  )
+
+(use-package kind-icon
+  :ensure t
+  :after corfu
+  :custom
+  (kind-icon-default-face 'corfu-default)
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+
+(use-package emacs
+  :init (setq tab-always-indent 'complete))
+
+(use-package dabbrev)
+
+(use-package cape
+  :init
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  )
 
 ;; ************************************************************
-;; Flycheck
+;;; Flycheck
 ;; ************************************************************
 (use-package flycheck)
 
 ;; ************************************************************
-;; Helpful
+;;; Helpful
 ;; ************************************************************
 (use-package helpful)
 
 ;; *************************************************************
-;; iedit
+;;; iedit
 ;; *************************************************************
 (use-package iedit)
 
 ;; ************************************************************
-;; Magit
+;;; Magit
 ;; ************************************************************
 (use-package magit
   :commands (magit-status magit-get-current-branch)
@@ -58,7 +93,7 @@
    #'magit-display-buffer-same-window-except-diff-v1))
 
 ;; ************************************************************
-;; Projectile
+;;; Projectile
 ;; ************************************************************
 (use-package projectile
   :diminish
@@ -87,7 +122,7 @@
   :config
   (setq wgrep-auto-save-buffer t))
 
-
 ;; *************************************************************
 ;; *************************************************************
 (provide 'utilities)
+;;; utilities.el ends here

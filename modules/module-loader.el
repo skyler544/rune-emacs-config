@@ -1,6 +1,12 @@
-;; -*- lexical-binding: t -*-
+;;; module-loader.el --- Description -*- lexical-binding: t; -*-
+;;
+;; This file is not part of GNU Emacs.
+;;
+;;; Commentary:
+;;; Code:
+
 ;; *************************************************************
-;; Emacs
+;;; Emacs
 ;; *************************************************************
 (use-package emacs
   :init
@@ -16,6 +22,8 @@
 
   (require 'ui-config)
   (require 'hydra-config)
+
+  (require 'misc-packages)
   )
 
 ;; *************************************************************

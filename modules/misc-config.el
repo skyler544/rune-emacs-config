@@ -1,6 +1,12 @@
-;; -*- lexical-binding: t -*-
+;;; misc-config.el --- Description -*- lexical-binding: t; -*-
+;;
+;; This file is not part of GNU Emacs.
+;;
+;;; Commentary:
+;;; Code:
+
 ;; ************************************************************
-;; Emacs
+;;; Emacs
 ;; ************************************************************
 (use-package emacs
   :init
@@ -9,10 +15,10 @@
   (setq warning-suppress-types '((comp)))
   (setq enable-recursive-minibuffers t)
   (setq make-backup-files nil)
-  (setq truncate-lines t)
+  ;; (setq truncate-lines t)
   (setq word-wrap nil)
   (setq-default indent-tabs-mode nil)
-  (setq echo-keystrokes 0.01)
+  (setq echo-keystrokes 0.02)
   (setq completion-ignore-case t)
   (setq blink-cursor-mode nil)
 
@@ -40,5 +46,13 @@
   (setq transient-history-file (concat user-emacs-directory ".cache/transient-history")))
 
 ;; ************************************************************
+;;; savehist
+;; ************************************************************
+(use-package savehist
+  :init
+  (savehist-mode))
+
+;; ************************************************************
 ;; ************************************************************
 (provide 'misc-config)
+;;; misc-config.el ends here

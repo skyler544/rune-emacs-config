@@ -1,6 +1,12 @@
-;; -*- lexical-binding: t -*-
+;;; hydra-config.el --- Description -*- lexical-binding: t; -*-
+;;
+;; This file is not part of GNU Emacs.
+;;
+;;; Commentary:
+;;; Code:
+
 ;; ************************************************************
-;; Hydra
+;;; Hydra
 ;; ************************************************************
 (use-package hydra
   :init
@@ -49,4 +55,7 @@ Resize: _h_: left  _j_: down  _k_: up  _l_: right "
     ("l" hydra-move-splitter-right      )
     ("q" nil                           )))
 
+;; ************************************************************
+;; ************************************************************
 (provide 'hydra-config)
+;;; hydra-config.el ends here

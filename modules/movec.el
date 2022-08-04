@@ -1,6 +1,12 @@
-;; -*- lexical-binding: t -*-
+;;; movec.el --- Description -*- lexical-binding: t; -*-
+;;
+;; This file is not part of GNU Emacs.
+;;
+;;; Commentary:
+;;; Code:
+
 ;; ************************************************************
-;; Vertico
+;;; Vertico
 ;; ************************************************************
 (use-package vertico
   :config
@@ -18,45 +24,38 @@
 (use-package vertico-directory
   :after vertico
   :ensure nil
-  ;; :load-path "extensions/"
   :bind (:map vertico-map
          ("RET" . vertico-directory-enter)
          ("DEL" . vertico-directory-delete-char)
          ("M-DEL" . vertico-directory-delete-word)))
 
-(use-package savehist
-  :init
-  (savehist-mode))
-
 ;; ************************************************************
-;; Orderless
+;;; Orderless
 ;; ************************************************************
 (use-package orderless
   :custom
   (completion-styles '(substring orderless)))
 
 ;; ************************************************************
-;; Marginalia
+;;; Marginalia
 ;; ************************************************************
 (use-package marginalia
-  :bind (:map vertico-map
-         ("M-A" . marginalia-cycle))
   :init
   (marginalia-mode))
 
 ;; ************************************************************
-;; Consult
+;;; Consult
 ;; ************************************************************
 (use-package consult
   :bind (("C-x b" . consult-buffer))
   :config
-  (consult-customize consult-buffer :preview-key (kbd "M-/"))
+  ;; (consult-customize consult-buffer :preview-key (kbd "M-/"))
 
-  (advice-add #'completing-read-multiple
-              :override #'consult-completing-read-multiple)
-  (advice-add #'multi-occur :override #'consult-multi-occur)
+  ;; (advice-add #'completing-read-multiple
+  ;;             :override #'consult-completing-read-multiple)
+  ;; (advice-add #'multi-occur :override #'consult-multi-occur)
 
-  (setq consult-narrow-key "<")
+  ;; (setq consult-narrow-key "<")
 
   (setq completion-in-region-function
         (lambda (&rest args)
@@ -72,18 +71,16 @@
          ("C-f" . consult-dir-jump-file)))
 
 ;; ************************************************************
-;; Embark
+;;; Embark
 ;; ************************************************************
 (use-package embark
-  :bind
-  (("C-," . embark-act)
-   ("C-x C-," . embark-act)
-   ("C-h B" . embark-bindings))
+  :bind (("C-," . embark-act)
+         ("C-x C-," . embark-act)
+         ("C-h B" . embark-bindings))
 
-  :init
-  (general-define-key
-   :keymaps 'minibuffer-local-map
-   "C-;" 'embark-act)
+  :bind (:map minibuffer-local-map
+         ("C-;" . embark-act)
+         ("C-," . embark-act-all))
 
   :config
   (setq embark-prompter #'embark-completing-read-prompter)
@@ -107,3 +104,4 @@
 ;; ************************************************************
 ;; ************************************************************
 (provide 'movec)
+;;; movec.el ends here
