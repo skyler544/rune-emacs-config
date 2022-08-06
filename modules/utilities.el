@@ -88,6 +88,8 @@
 ;; ************************************************************
 (use-package magit
   :commands (magit-status magit-get-current-branch)
+  :config
+  (add-hook 'git-commit-mode-hook 'evil-insert-state)
   :custom
   (magit-display-buffer-function
    #'magit-display-buffer-same-window-except-diff-v1))
