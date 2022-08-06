@@ -10,7 +10,9 @@
 ;; *************************************************************
 (use-package lsp-mode
   :config
-  (setq lsp-headerline-breadcrumb-enable nil))
+  (setq lsp-headerline-breadcrumb-enable nil)
+  (add-hook 'c++-mode-hook #'lsp))
+
 (use-package lsp-ui)
 
 ;; *************************************************************

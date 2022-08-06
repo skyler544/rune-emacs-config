@@ -92,6 +92,8 @@
    "bs"  '(save-buffer :which-key "save-buffer")
    "bS"  '(write-file :which-key "write-file")
 
+   "cf"  '(lsp-format-buffer :which-key "format code")
+
    "f"   '(:ignore t :which-key "files")
    "a"   '(embark-act :which-key "embark-act")
    "fp"  '(projectile-find-file :which-key "find file in project")
