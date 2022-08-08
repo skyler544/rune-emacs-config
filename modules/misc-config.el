@@ -22,6 +22,8 @@
   (setq completion-ignore-case t)
   (setq blink-cursor-mode nil)
 
+  (setq shell-file-name "/usr/bin/bash")
+
   (require 'recentf)
   (setq recentf-save-file (concat user-emacs-directory ".cache/recentf"))
   (setq recentf-max-saved-items 200)
@@ -44,6 +46,11 @@
   (setq eshell-history-file-name (concat user-emacs-directory ".cache/eshell-history"))
   (setq savehist-file (concat user-emacs-directory ".cache/minibuffer-history"))
   (setq transient-history-file (concat user-emacs-directory ".cache/transient-history")))
+
+;; ************************************************************
+;;; Eshell
+;; ************************************************************
+(use-package eshell)
 
 ;; ************************************************************
 ;;; savehist

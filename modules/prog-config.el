@@ -11,7 +11,10 @@
 (use-package lsp-mode
   :config
   (setq lsp-headerline-breadcrumb-enable nil)
-  (add-hook 'c++-mode-hook #'lsp))
+  (setq lsp-phpactor-path "/usr/local/bin/phpactor")
+  :hook (c++-mode . lsp)
+  (lsp-mode . lsp-enable-which-key-integration)
+  :commands lsp)
 
 (use-package lsp-ui)
 
@@ -29,6 +32,21 @@
 ;;; Format All
 ;; *************************************************************
 (use-package format-all)
+
+;; *************************************************************
+;;; php
+;; *************************************************************
+(use-package php-mode
+  :config
+
+  (defun +php-interpret-file ()
+    "Interpret the current file."
+    (interactive)
+    (shell-command (concat "php " (buffer-file-name)) "*PHP*" "*PHP-ERR*"))
+
+  (general-define-key
+   :states 'normal
+   "SPC php" '+php-interpret-file))
 
 ;; *************************************************************
 ;;; web-mode

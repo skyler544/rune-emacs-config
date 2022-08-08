@@ -33,10 +33,10 @@
   :init
   (global-corfu-mode)
 
-  (add-hook 'eshell-mode-hook
-            (lambda ()
-              (setq-local corfu-auto nil)
-              (corfu-mode)))
+  ;; (add-hook 'eshell-mode-hook
+  ;;           (lambda ()
+  ;;             (setq-local corfu-auto nil)
+  ;;             (corfu-mode)))
   )
 
 (use-package corfu-doc
@@ -110,11 +110,12 @@
 ;; ************************************************************
 ;; Smartparens
 ;; ************************************************************
-(use-package smartparens
-  :init
-  (require 'smartparens-config)
-  :config
-  (add-hook 'prog-mode-hook #'smartparens-mode))
+;; (use-package smartparens
+;;   :init
+;;   (require 'smartparens-config)
+;;   :config
+;;   (setq smartparens-strict-mode t)
+;;   (add-hook 'prog-mode-hook #'smartparens-mode))
 
 ;; ************************************************************
 ;; wgrep
